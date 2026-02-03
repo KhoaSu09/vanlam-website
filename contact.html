@@ -484,13 +484,20 @@
         return false;
       }
       
-      // Add services as hidden field for Formspree
+      const name = document.getElementById('cons_name').value;
+      
+      // Add services as hidden field for FormSubmit
       const servicesStr = services.map(c => c.value).join(', ');
       const hiddenField = document.createElement('input');
       hiddenField.type = 'hidden';
       hiddenField.name = 'services';
       hiddenField.value = servicesStr;
       event.target.appendChild(hiddenField);
+      
+      // Show success message after form submission
+      setTimeout(() => {
+        alert('Cảm ơn ' + name + '! Yêu cầu tư vấn của bạn đã được gửi. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất!');
+      }, 100);
       
       return true;
     }
