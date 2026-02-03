@@ -395,26 +395,26 @@
       <h2>🎯 Yêu cầu tư vấn dịch vụ</h2>
       <p>Điền form dưới đây để nhận tư vấn miễn phí từ chuyên gia của chúng tôi</p>
 
-      <form onsubmit="handleConsultationSubmit(event)">
+      <form method="POST" action="https://formspree.io/f/xyzpqwvk" onsubmit="return handleConsultationSubmit(event)">
         <div class="form-row">
           <div class="form-group">
             <label for="cons_name">Họ và tên *</label>
-            <input type="text" id="cons_name" name="cons_name" required>
+            <input type="text" id="cons_name" name="name" required>
           </div>
           <div class="form-group">
             <label for="cons_phone">Số điện thoại *</label>
-            <input type="tel" id="cons_phone" name="cons_phone" required>
+            <input type="tel" id="cons_phone" name="phone" required>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label for="cons_email">Email</label>
-            <input type="email" id="cons_email" name="cons_email">
+            <input type="email" id="cons_email" name="email">
           </div>
           <div class="form-group">
             <label for="cons_company">Tên công ty</label>
-            <input type="text" id="cons_company" name="cons_company">
+            <input type="text" id="cons_company" name="company">
           </div>
         </div>
 
@@ -442,7 +442,7 @@
 
         <div class="form-group form-row full">
           <label for="cons_requirement">Chi tiết yêu cầu tư vấn *</label>
-          <textarea id="cons_requirement" name="cons_requirement" placeholder="Mô tả nhu cầu của bạn, quy mô doanh nghiệp, mục tiêu, v.v." required></textarea>
+          <textarea id="cons_requirement" name="requirement" placeholder="Mô tả nhu cầu của bạn, quy mô doanh nghiệp, mục tiêu, v.v." required></textarea>
         </div>
 
         <div class="form-group">
@@ -477,31 +477,22 @@
     }
 
     function handleConsultationSubmit(event) {
-      event.preventDefault();
-      const name = document.getElementById('cons_name').value;
-      const phone = document.getElementById('cons_phone').value;
-      const email = document.getElementById('cons_email').value;
-      const company = document.getElementById('cons_company').value;
-      const services = Array.from(document.querySelectorAll('input[name="services"]:checked')).map(c => c.value);
-      const requirement = document.getElementById('cons_requirement').value;
-
+      const services = Array.from(document.querySelectorAll('input[name="services"]:checked'));
       if(services.length === 0) {
+        event.preventDefault();
         alert('Vui lòng chọn ít nhất một dịch vụ');
-        return;
+        return false;
       }
-
-      const message = `
-Yêu cầu tư vấn từ: ${name}
-Số điện thoại: ${phone}
-Email: ${email || 'Không cập nhật'}
-Công ty: ${company || 'Không cập nhật'}
-Dịch vụ quan tâm: ${services.join(', ')}
-Chi tiết: ${requirement}
-      `.trim();
-
-      alert('Cảm ơn ' + name + '! Chúng tôi sẽ liên hệ với bạn qua số điện thoại ' + phone + ' trong thời gian sớm nhất.');
-      console.log(message);
-      event.target.reset();
+      
+      // Add services as hidden field for Formspree
+      const servicesStr = services.map(c => c.value).join(', ');
+      const hiddenField = document.createElement('input');
+      hiddenField.type = 'hidden';
+      hiddenField.name = 'services';
+      hiddenField.value = servicesStr;
+      event.target.appendChild(hiddenField);
+      
+      return true;
     }
   </script>
 
