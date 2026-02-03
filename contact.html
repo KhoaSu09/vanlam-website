@@ -209,6 +209,82 @@
         gap: 30px;
       }
     }
+
+    /* Consultation Form */
+    .consultation-section {
+      background: var(--light);
+      padding: 70px 0;
+      margin-top: 40px;
+    }
+
+    .consultation-wrapper {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .consultation-wrapper h2 {
+      color: var(--primary);
+      font-size: 28px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .consultation-wrapper > p {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 30px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-row.full {
+      grid-template-columns: 1fr;
+    }
+
+    .services-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .service-checkbox {
+      display: flex;
+      align-items: center;
+    }
+
+    .service-checkbox input {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
+
+    .service-checkbox label {
+      margin: 0;
+      cursor: pointer;
+      font-weight: 400;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .services-list {
+        grid-template-columns: 1fr;
+      }
+      .consultation-wrapper {
+        padding: 20px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -322,6 +398,74 @@
     </div>
   </footer>
 
+  <!-- Consultation Section -->
+  <section class="consultation-section">
+    <div class="container consultation-wrapper">
+      <h2>🎯 Yêu cầu tư vấn dịch vụ</h2>
+      <p>Điền form dưới đây để nhận tư vấn miễn phí từ chuyên gia của chúng tôi</p>
+
+      <form onsubmit="handleConsultationSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cons_name">Họ và tên *</label>
+            <input type="text" id="cons_name" name="cons_name" required>
+          </div>
+          <div class="form-group">
+            <label for="cons_phone">Số điện thoại *</label>
+            <input type="tel" id="cons_phone" name="cons_phone" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cons_email">Email</label>
+            <input type="email" id="cons_email" name="cons_email">
+          </div>
+          <div class="form-group">
+            <label for="cons_company">Tên công ty</label>
+            <input type="text" id="cons_company" name="cons_company">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Bạn quan tâm đến dịch vụ nào? *</label>
+          <div class="services-list">
+            <div class="service-checkbox">
+              <input type="checkbox" id="service_digital" name="services" value="Tư vấn chuyển đổi số">
+              <label for="service_digital">Tư vấn chuyển đổi số</label>
+            </div>
+            <div class="service-checkbox">
+              <input type="checkbox" id="service_cloud" name="services" value="Hạ tầng CNTT & Cloud">
+              <label for="service_cloud">Hạ tầng CNTT & Cloud</label>
+            </div>
+            <div class="service-checkbox">
+              <input type="checkbox" id="service_elv" name="services" value="Giải pháp ELV">
+              <label for="service_elv">Giải pháp ELV</label>
+            </div>
+            <div class="service-checkbox">
+              <input type="checkbox" id="service_maintenance" name="services" value="Vận hành & Bảo trì">
+              <label for="service_maintenance">Vận hành & Bảo trì</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group form-row full">
+          <label for="cons_requirement">Chi tiết yêu cầu tư vấn *</label>
+          <textarea id="cons_requirement" name="cons_requirement" placeholder="Mô tả nhu cầu của bạn, quy mô doanh nghiệp, mục tiêu, v.v." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label style="display: flex; align-items: center; font-weight: 400; cursor: pointer;">
+            <input type="checkbox" id="cons_agree" name="cons_agree" required style="width: 18px; height: 18px; margin-right: 10px; margin-bottom: 0; accent-color: var(--primary);">
+            Tôi đồng ý được liên hệ để nhận tư vấn
+          </label>
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%;">Gửi yêu cầu tư vấn</button>
+      </form>
+    </div>
+  </section>
+
   <script>
     function handleSubmit(event) {
       event.preventDefault();
@@ -331,6 +475,34 @@
       const message = document.getElementById('message').value;
       
       alert('Cảm ơn ' + name + '! Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.');
+      event.target.reset();
+    }
+
+    function handleConsultationSubmit(event) {
+      event.preventDefault();
+      const name = document.getElementById('cons_name').value;
+      const phone = document.getElementById('cons_phone').value;
+      const email = document.getElementById('cons_email').value;
+      const company = document.getElementById('cons_company').value;
+      const services = Array.from(document.querySelectorAll('input[name="services"]:checked')).map(c => c.value);
+      const requirement = document.getElementById('cons_requirement').value;
+
+      if(services.length === 0) {
+        alert('Vui lòng chọn ít nhất một dịch vụ');
+        return;
+      }
+
+      const message = `
+Yêu cầu tư vấn từ: ${name}
+Số điện thoại: ${phone}
+Email: ${email || 'Không cập nhật'}
+Công ty: ${company || 'Không cập nhật'}
+Dịch vụ quan tâm: ${services.join(', ')}
+Chi tiết: ${requirement}
+      `.trim();
+
+      alert('Cảm ơn ' + name + '! Chúng tôi sẽ liên hệ với bạn qua số điện thoại ' + phone + ' trong thời gian sớm nhất.');
+      console.log(message);
       event.target.reset();
     }
   </script>
