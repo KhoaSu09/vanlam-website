@@ -194,27 +194,10 @@
       color: #fff;
     }
 
-    footer {
-      background: #020617;
-      color: #9ca3af;
-      padding: 30px 0;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
-      .page-header h1 { font-size: 28px; }
-      .contact-wrapper {
-        grid-template-columns: 1fr;
-        gap: 30px;
-      }
-    }
-
-    /* Consultation Form */
+    /* Consultation Section */
     .consultation-section {
       background: var(--light);
-      padding: 70px 0;
-      margin-top: 40px;
+      padding: 70px 20px;
     }
 
     .consultation-wrapper {
@@ -237,6 +220,7 @@
       text-align: center;
       color: var(--muted);
       margin-bottom: 30px;
+      font-size: 16px;
     }
 
     .form-row {
@@ -253,6 +237,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
+      margin-bottom: 20px;
     }
 
     .service-checkbox {
@@ -274,7 +259,20 @@
       font-weight: 400;
     }
 
+    footer {
+      background: #020617;
+      color: #9ca3af;
+      padding: 30px 0;
+      text-align: center;
+      font-size: 14px;
+    }
+
     @media (max-width: 768px) {
+      .page-header h1 { font-size: 28px; }
+      .contact-wrapper {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
       .form-row {
         grid-template-columns: 1fr;
       }
@@ -360,17 +358,17 @@
             </div>
 
             <div class="form-group">
-              <label for="email">khoasu.tech020@gmail.com *</label>
+              <label for="email">Email *</label>
               <input type="email" id="email" name="email" required>
             </div>
 
             <div class="form-group">
-              <label for="phone">0912 818 815</label>
+              <label for="phone">Số điện thoại</label>
               <input type="tel" id="phone" name="phone">
             </div>
 
             <div class="form-group">
-              <label for="company">Vanlam technologies</label>
+              <label for="company">Công ty</label>
               <input type="text" id="company" name="company">
             </div>
 
@@ -421,7 +419,7 @@
         </div>
 
         <div class="form-group">
-          <label>Bạn quan tâm đến dịch vụ nào? *</label>
+          <label style="display: block; margin-bottom: 12px; font-weight: 500;">Bạn quan tâm đến dịch vụ nào? *</label>
           <div class="services-list">
             <div class="service-checkbox">
               <input type="checkbox" id="service_digital" name="services" value="Tư vấn chuyển đổi số">
@@ -448,13 +446,13 @@
         </div>
 
         <div class="form-group">
-          <label style="display: flex; align-items: center; font-weight: 400; cursor: pointer;">
+          <label style="display: flex; align-items: center; font-weight: 400; cursor: pointer; margin-bottom: 0;">
             <input type="checkbox" id="cons_agree" name="cons_agree" required style="width: 18px; height: 18px; margin-right: 10px; margin-bottom: 0; accent-color: var(--primary);">
             Tôi đồng ý được liên hệ để nhận tư vấn
           </label>
         </div>
 
-        <button type="submit" class="btn" style="width: 100%;">Gửi yêu cầu tư vấn</button>
+        <button type="submit" class="btn" style="width: 100%; margin-top: 20px;">Gửi yêu cầu tư vấn</button>
       </form>
     </div>
   </section>
