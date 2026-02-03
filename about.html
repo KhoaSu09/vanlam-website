@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giới thiệu | QI Consulting</title>
+  <meta name="description" content="Tìm hiểu về QI Consulting - đội ngũ chuyên gia công nghệ giàu kinh nghiệm trong lĩnh vực CNTT, cloud và hạ tầng doanh nghiệp." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f3c7d;
+      --secondary: #0aa3a3;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --bg: #ffffff;
+      --light: #f4f7fb;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* Header */
+    header {
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 20px;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .menu a {
+      margin-left: 24px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .menu a:hover { color: var(--primary); }
+    .menu a.active { color: var(--primary); }
+
+    /* Page Header */
+    .page-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      padding: 60px 0;
+    }
+    .page-header h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    /* Section */
+    section { padding: 70px 0; }
+
+    /* About Content */
+    .about-section {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .about-section h2 {
+      color: var(--primary);
+      font-size: 28px;
+      margin-bottom: 20px;
+      margin-top: 40px;
+    }
+    .about-section h2:first-child {
+      margin-top: 0;
+    }
+    .about-section p {
+      color: var(--text);
+      margin-bottom: 15px;
+      line-height: 1.8;
+    }
+
+    /* Values Grid */
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+    .value-card {
+      background: var(--light);
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .value-card h3 {
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+    .value-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* Expertise List */
+    .expertise-list {
+      background: var(--light);
+      padding: 40px;
+      border-radius: 12px;
+      margin-top: 30px;
+    }
+    .expertise-list h3 {
+      color: var(--primary);
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+    .expertise-list ul {
+      list-style: none;
+      columns: 2;
+      gap: 30px;
+    }
+    .expertise-list li {
+      padding: 8px 0;
+      padding-left: 24px;
+      position: relative;
+      color: var(--text);
+    }
+    .expertise-list li:before {
+      content: "▸";
+      position: absolute;
+      left: 0;
+      color: var(--secondary);
+      font-weight: bold;
+    }
+
+    footer {
+      background: #020617;
+      color: #9ca3af;
+      padding: 30px 0;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .page-header h1 { font-size: 28px; }
+      .expertise-list ul { columns: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav">
+      <div class="logo">QI Consulting</div>
+      <nav class="menu">
+        <a href="index.html">Trang chủ</a>
+        <a href="services.html">Dịch vụ</a>
+        <a href="about.html" class="active">Giới thiệu</a>
+        <a href="contact.html">Liên hệ</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>Về QI Consulting</h1>
+      <p>Đối tác đáng tin cậy trong chuyển đổi số doanh nghiệp</p>
+    </div>
+  </section>
+
+  <!-- About Content -->
+  <section>
+    <div class="container about-section">
+      <h2>Chúng tôi là ai?</h2>
+      <p>QI Consulting là công ty chuyên cung cấp các giải pháp công nghệ thông tin toàn diện cho doanh nghiệp. Với hơn 15 năm kinh nghiệm trong lĩnh vực CNTT, cloud computing và hạ tầng doanh nghiệp, chúng tôi đã giúp hàng trăm công ty tại Việt Nam thực hiện thành công quá trình chuyển đổi số.</p>
+      <p>Đội ngũ của chúng tôi gồm các kỹ sư, tư vấn viên và chuyên gia công nghệ có chứng chỉ quốc tế, sẵn sàng giải quyết những thách thức công nghệ phức tạp nhất.</p>
+
+      <h2>Giá trị cốt lõi</h2>
+      <div class="values-grid">
+        <div class="value-card">
+          <h3>Chất lượng</h3>
+          <p>Cam kết cung cấp dịch vụ chất lượng cao, tuân thủ các tiêu chuẩn quốc tế.</p>
+        </div>
+        <div class="value-card">
+          <h3>Đáng tin cậy</h3>
+          <p>Được tin tưởng bởi các doanh nghiệp lớn và nhỏ tại Việt Nam.</p>
+        </div>
+        <div class="value-card">
+          <h3>Hiệu suất</h3>
+          <p>Tối ưu hóa chi phí vận hành và tăng hiệu suất hệ thống.</p>
+        </div>
+        <div class="value-card">
+          <h3>Hỗ trợ 24/7</h3>
+          <p>Đội ngũ hỗ trợ kỹ thuật sẵn sàng 24 giờ, 7 ngày một tuần.</p>
+        </div>
+      </div>
+
+      <h2>Lĩnh vực chuyên môn</h2>
+      <div class="expertise-list">
+        <h3>Chúng tôi có kinh nghiệm sâu trong:</h3>
+        <ul>
+          <li>Chuyển đổi số và tư vấn công nghệ</li>
+          <li>Cloud Computing (AWS, Azure, GCP)</li>
+          <li>Hạ tầng máy chủ và Data Center</li>
+          <li>Bảo mật thông tin và Firewall</li>
+          <li>Hệ thống ELV (CCTV, Access Control)</li>
+          <li>Quản lý mạng máy tính</li>
+          <li>Backup và Disaster Recovery</li>
+          <li>Vận hành và bảo trì hệ thống 24/7</li>
+        </ul>
+      </div>
+
+      <h2>Tại sao chọn QI Consulting?</h2>
+      <p>Chúng tôi không chỉ cung cấp công nghệ mà còn là một đối tác chiến lược giúp doanh nghiệp của bạn thành công. Với phương pháp tiếp cận dựa trên nhu cầu thực tế, chúng tôi đảm bảo rằng mỗi giải pháp đều mang lại giá trị cụ thể và đo lường được.</p>
+      <p>Hãy liên hệ với chúng tôi hôm nay để tìm hiểu thêm về cách QI Consulting có thể giúp biến đổi doanh nghiệp của bạn.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      © 2025 QI Consulting. All rights reserved.
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liên hệ | QI Consulting</title>
+  <meta name="description" content="Liên hệ với QI Consulting để được tư vấn miễn phí về các giải pháp CNTT và chuyển đổi số." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f3c7d;
+      --secondary: #0aa3a3;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --bg: #ffffff;
+      --light: #f4f7fb;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* Header */
+    header {
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 20px;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .menu a {
+      margin-left: 24px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .menu a:hover { color: var(--primary); }
+    .menu a.active { color: var(--primary); }
+
+    /* Page Header */
+    .page-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      padding: 60px 0;
+    }
+    .page-header h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    /* Section */
+    section { padding: 70px 0; }
+
+    /* Contact Content */
+    .contact-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: start;
+    }
+
+    .contact-info h2 {
+      color: var(--primary);
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
+
+    .contact-item {
+      margin-bottom: 30px;
+    }
+
+    .contact-item h3 {
+      color: var(--primary);
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .contact-item p {
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    .contact-item a {
+      color: var(--secondary);
+      font-weight: 600;
+    }
+
+    .contact-item a:hover {
+      color: var(--primary);
+    }
+
+    /* Form */
+    .contact-form h2 {
+      color: var(--primary);
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(15, 60, 125, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: var(--secondary);
+    }
+
+    /* Social Links */
+    .social-links {
+      margin-top: 40px;
+      display: flex;
+      gap: 20px;
+    }
+
+    .social-links a {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      background: var(--light);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .social-links a:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    footer {
+      background: #020617;
+      color: #9ca3af;
+      padding: 30px 0;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .page-header h1 { font-size: 28px; }
+      .contact-wrapper {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav">
+      <div class="logo">QI Consulting</div>
+      <nav class="menu">
+        <a href="index.html">Trang chủ</a>
+        <a href="services.html">Dịch vụ</a>
+        <a href="about.html">Giới thiệu</a>
+        <a href="contact.html" class="active">Liên hệ</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>Liên hệ với chúng tôi</h1>
+      <p>Hãy để chúng tôi giúp bạn biến đổi doanh nghiệp</p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section>
+    <div class="container">
+      <div class="contact-wrapper">
+        <!-- Contact Info -->
+        <div class="contact-info">
+          <h2>Thông tin liên hệ</h2>
+
+          <div class="contact-item">
+            <h3>📧 Email</h3>
+            <p><a href="mailto:khoasna@qi.com.vn">khoasna@qi.com.vn</a></p>
+            <p style="color: var(--muted); font-size: 14px;">Gửi email để nhận phản hồi trong vòng 24 giờ</p>
+          </div>
+
+          <div class="contact-item">
+            <h3>📞 Hotline</h3>
+            <p><a href="tel:0992818815">0992 818 815</a></p>
+            <p style="color: var(--muted); font-size: 14px;">Hỗ trợ: Thứ 2 - Thứ 6, 8:00 - 18:00</p>
+          </div>
+
+          <div class="contact-item">
+            <h3>🏢 Địa chỉ</h3>
+            <p>QI Consulting<br>
+            Hà Nội, Việt Nam</p>
+          </div>
+
+          <div class="contact-item">
+            <h3>⏰ Giờ làm việc</h3>
+            <p>Thứ Hai - Thứ Sáu: 8:00 - 18:00<br>
+            Thứ Bảy: 9:00 - 12:00<br>
+            Chủ Nhật: Đóng cửa</p>
+          </div>
+
+          <div class="social-links">
+            <a href="#" title="Facebook">f</a>
+            <a href="#" title="LinkedIn">in</a>
+            <a href="#" title="Twitter">𝕏</a>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-form">
+          <h2>Gửi tin nhắn</h2>
+          <form onsubmit="handleSubmit(event)">
+            <div class="form-group">
+              <label for="name">Họ và tên *</label>
+              <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Số điện thoại</label>
+              <input type="tel" id="phone" name="phone">
+            </div>
+
+            <div class="form-group">
+              <label for="company">Công ty</label>
+              <input type="text" id="company" name="company">
+            </div>
+
+            <div class="form-group">
+              <label for="subject">Chủ đề *</label>
+              <input type="text" id="subject" name="subject" required>
+            </div>
+
+            <div class="form-group">
+              <label for="message">Nội dung tin nhắn *</label>
+              <textarea id="message" name="message" required></textarea>
+            </div>
+
+            <button type="submit" class="btn">Gửi tin nhắn</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      © 2025 QI Consulting. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    function handleSubmit(event) {
+      event.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const subject = document.getElementById('subject').value;
+      const message = document.getElementById('message').value;
+      
+      alert('Cảm ơn ' + name + '! Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.');
+      event.target.reset();
+    }
+  </script>
+
+</body>
+</html>
