@@ -484,8 +484,6 @@
         return false;
       }
       
-      const name = document.getElementById('cons_name').value;
-      
       // Add services as hidden field for FormSubmit
       const servicesStr = services.map(c => c.value).join(', ');
       const hiddenField = document.createElement('input');
@@ -494,11 +492,10 @@
       hiddenField.value = servicesStr;
       event.target.appendChild(hiddenField);
       
-      // Show success message and redirect to home page
+      // Redirect to home page after form submission
       setTimeout(() => {
-        alert('Cảm ơn ' + name + '! Yêu cầu tư vấn của bạn đã được gửi. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất!');
         window.location.href = 'index.html';
-      }, 100);
+      }, 500);
       
       return true;
     }
