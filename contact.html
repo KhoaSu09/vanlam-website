@@ -494,9 +494,10 @@
       hiddenField.value = servicesStr;
       event.target.appendChild(hiddenField);
       
-      // Show success message after form submission
+      // Show success message and redirect to home page
       setTimeout(() => {
         alert('Cảm ơn ' + name + '! Yêu cầu tư vấn của bạn đã được gửi. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất!');
+        window.location.href = 'index.html';
       }, 100);
       
       return true;
