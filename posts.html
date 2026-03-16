@@ -4,6 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Quản lý bài viết | Vanlam technologies</title>
+  <meta name="description" content="Quản lý bài viết của Vanlam technologies. Thêm, chỉnh sửa và xóa nội dung tin tức, kèm hình ảnh." />
+  <meta name="keywords" content="quản lý bài viết, tin tức, Vanlam technologies, đăng bài" />
+  <meta property="og:title" content="Quản lý bài viết | Vanlam technologies" />
+  <meta property="og:description" content="Trang quản lý bài viết cho tin tức của Vanlam technologies. Thêm bài, sửa bài, xóa bài và cập nhật nội dung nhanh chóng." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://example.com/og-image.png" />
   <style>
     :root { --bg:#f4f6fb; --card:#fff; --text:#111; --muted:#6b7280; --primary:#0f3c7d; --danger:#c92a2a; }
     * { box-sizing:border-box; }
@@ -162,6 +168,7 @@
       managerInfo.textContent = `${posts.length} bài viết`; 
       if (!posts.length) {
         postsList.innerHTML = '<div style="padding:18px; border:1px dashed #cbd5e1; border-radius:12px; text-align:center; color:#6b7280;">Chưa có bài viết nào.</div>';
+        updateSeoJsonLd([]);
         return;
       }
 
@@ -183,6 +190,48 @@
           </div>
         `;
       }).join('');
+
+      updateSeoJsonLd(posts);
+    }
+
+    function updateSeoJsonLd(posts) {
+      const schema = {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "name": "Vanlam technologies - Quản lý bài viết",
+        "url": window.location.href,
+        "description": "Trang quản lý bài viết / tin tức của Vanlam technologies.",
+        "blogPost": posts.map(p => {
+          const item = {
+            "@type": "NewsArticle",
+            "headline": p.title,
+            "datePublished": p.date,
+            "dateModified": p.date,
+            "description": p.content ? p.content.substring(0, 160) : '',
+            "articleBody": p.content,
+            "url": `${window.location.origin}${window.location.pathname}#${p.id}`,
+            "publisher": {
+              "@type": "Organization",
+              "name": "Vanlam technologies",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://example.com/logo.png"
+              }
+            }
+          };
+          if (p.image) item.image = p.image;
+          return item;
+        })
+      };
+
+      let schemaEl = document.getElementById('ldJson');
+      if (!schemaEl) {
+        schemaEl = document.createElement('script');
+        schemaEl.id = 'ldJson';
+        schemaEl.type = 'application/ld+json';
+        document.head.appendChild(schemaEl);
+      }
+      schemaEl.textContent = JSON.stringify(schema, null, 2);
     }
 
     function escapeHtml(s) {
