@@ -98,10 +98,6 @@
         <textarea id="postContent" class="form-control" rows="7" placeholder="Nhập nội dung"></textarea>
       </div>
       <div class="form-group">
-        <label class="form-label" for="postDate">Ngày</label>
-        <input id="postDate" class="form-control" type="datetime-local" />
-      </div>
-      <div class="form-group">
         <label class="form-label" for="postImage">Hình ảnh (tùy chọn)</label>
         <input id="postImage" class="form-control" type="file" accept="image/*" />
         <div id="imagePreview" style="margin-top:8px;"></div>
@@ -134,7 +130,6 @@
     const modalTitle = document.getElementById('modalTitle');
     const postTitle = document.getElementById('postTitle');
     const postContent = document.getElementById('postContent');
-    const postDate = document.getElementById('postDate');
     const postImage = document.getElementById('postImage');
     const savePostBtn = document.getElementById('savePostBtn');
 
@@ -229,14 +224,12 @@
         modalTitle.textContent = 'Sửa bài viết';
         postTitle.value = post.title;
         postContent.value = post.content;
-        postDate.value = new Date(post.date).toISOString().slice(0,16);
         document.getElementById('imagePreview').innerHTML = post.image ? `<img src="${post.image}" style="max-width:100%; height:auto; border-radius:8px;" />` : '';
       } else {
         editingId = null;
         modalTitle.textContent = 'Thêm bài viết';
         postTitle.value = '';
         postContent.value = '';
-        postDate.value = new Date().toISOString().slice(0,16);
         document.getElementById('imagePreview').innerHTML = '';
       }
       postImage.value = '';
@@ -250,10 +243,10 @@
     async function savePost() {
       const title = postTitle.value.trim();
       const content = postContent.value.trim();
-      const date = postDate.value;
+      const date = new Date().toISOString();
 
-      if (!title || !content || !date) {
-        alert('Vui lòng điền đầy đủ tiêu đề, nội dung và ngày.');
+      if (!title || !content) {
+        alert('Vui lòng điền đầy đủ tiêu đề và nội dung.');
         return;
       }
 
