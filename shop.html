@@ -125,13 +125,13 @@
       container.innerHTML = products.map(p => {
         const imageHtml = p.image ? `<img class="product-image" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy" />` : '';
         return `
-        <article class="product-card">
+        <article class="product-card" data-id="${p.id}" data-name="${escapeHtml(p.name).replace(/"/g, '&quot;')}" data-price="${p.price}" data-image="${p.image || ''}">
           ${imageHtml}
           <div class="product-header">
             <h2 class="product-title">${escapeHtml(p.name)}</h2>
             <div class="product-price">${formatPrice(p.price)}</div>
             <p class="product-description">${escapeHtml(getPreview(p.description))}</p>
-            <button class="add-to-cart" onclick="addToCart('${p.id}', '${escapeHtml(p.name)}', ${p.price}, '${p.image || ''}')">Thêm vào giỏ</button>
+            <button class="add-to-cart">Thêm vào giỏ</button>
           </div>
         </article>
       `;
@@ -189,6 +189,18 @@
     }
 
     renderProducts();
+
+    // Add event listeners for add to cart buttons
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('add-to-cart')) {
+        const card = e.target.closest('.product-card');
+        const id = card.dataset.id;
+        const name = card.dataset.name;
+        const price = parseFloat(card.dataset.price);
+        const image = card.dataset.image;
+        addToCart(id, name, price, image);
+      }
+    });
 
     // Cart functions
     const CART_KEY = 'vl_cart';
