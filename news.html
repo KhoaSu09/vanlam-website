@@ -68,7 +68,7 @@
         <button class="modal-close" onclick="closeModal()">✕</button>
       </div>
       <div id="modalMeta" class="modal-meta"></div>
-      <img id="modalImage" class="modal-image" src="" alt="" style="display:none" />
+      <img id="modalImage" class="modal-image" src="" alt="" style="display:none" loading="lazy" />
       <div id="modalBody" class="modal-body"></div>
     </div>
   </div>
@@ -124,7 +124,7 @@
       }
       
       container.innerHTML = posts.map(p => {
-        const imageHtml = p.image ? `<img class="post-image" src="${p.image}" alt="${escapeHtml(p.title)}" />` : '';
+        const imageHtml = p.image ? `<img class="post-image" src="${p.image}" alt="${escapeHtml(p.title)}" loading="lazy" />` : '';
         return `
         <article class="post-card" onclick="openModal(${JSON.stringify(p).replace(/"/g, '&quot;')})">
           ${imageHtml}
