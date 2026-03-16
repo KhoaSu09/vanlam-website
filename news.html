@@ -21,6 +21,8 @@
     .post-title { font-size:18px; font-weight:600; margin:0 0 8px; color:#0f3c7d }
     .post-meta { font-size:13px; color:#6b7280; margin-bottom:12px }
     .post-preview { color:#4b5563; font-size:14px; line-height:1.5; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden }
+    .post-image { width:100%; height:160px; object-fit:cover; display:block }
+    .modal-image { width:100%; max-height:320px; object-fit:cover; border-radius:10px; margin-bottom:18px; }
 
     .empty-state { text-align:center; color:#6b7280; padding:60px 20px }
     .empty-state p { margin:0 }
@@ -60,6 +62,7 @@
         <button class="modal-close" onclick="closeModal()">✕</button>
       </div>
       <div id="modalMeta" class="modal-meta"></div>
+      <img id="modalImage" class="modal-image" src="" alt="" style="display:none" />
       <div id="modalBody" class="modal-body"></div>
     </div>
   </div>
@@ -86,6 +89,16 @@
     function openModal(post){
       document.getElementById('modalTitle').textContent = escapeHtml(post.title);
       document.getElementById('modalMeta').textContent = new Date(post.date).toLocaleString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      const modalImage = document.getElementById('modalImage');
+      if (post.image) {
+        modalImage.src = post.image;
+        modalImage.alt = escapeHtml(post.title);
+        modalImage.style.display = 'block';
+      } else {
+        modalImage.style.display = 'none';
+      }
+
       document.getElementById('modalBody').textContent = post.content;
       document.getElementById('postModal').classList.add('active');
     }
@@ -103,15 +116,19 @@
         return;
       }
       
-      container.innerHTML = posts.map(p => `
+      container.innerHTML = posts.map(p => {
+        const imageHtml = p.image ? `<img class="post-image" src="${p.image}" alt="${escapeHtml(p.title)}" />` : '';
+        return `
         <article class="post-card" onclick="openModal(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+          ${imageHtml}
           <div class="post-header">
             <h2 class="post-title">${escapeHtml(p.title)}</h2>
             <div class="post-meta">${new Date(p.date).toLocaleString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
             <p class="post-preview">${escapeHtml(getPreview(p.content))}</p>
           </div>
         </article>
-      `).join('');
+      `;
+      }).join('');
     }
 
     renderPosts();
