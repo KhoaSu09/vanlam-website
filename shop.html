@@ -193,11 +193,14 @@
     // Add event listeners for add to cart buttons
     document.addEventListener('click', (e) => {
       if (e.target.classList.contains('add-to-cart')) {
+        console.log('Add to cart button clicked');
         const card = e.target.closest('.product-card');
+        console.log('Card:', card);
         const id = card.dataset.id;
         const name = decodeURIComponent(card.dataset.name);
         const price = parseFloat(card.dataset.price);
         const image = decodeURIComponent(card.dataset.image);
+        console.log('Data:', id, name, price, image);
         addToCart(id, name, price, image);
       }
     });
@@ -215,6 +218,7 @@
     }
 
     function addToCart(id, name, price, image) {
+      console.log('Adding to cart:', id, name, price, image);
       const cart = getCart();
       const existing = cart.find(item => item.id === id);
       if (existing) {
