@@ -5,220 +5,323 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Quản lý bài viết | Vanlam technologies</title>
   <style>
-    body { font-family: Inter, system-ui, Arial; margin:0; color:#111; background:#f8fafc }
-    .container { max-width:900px; margin:32px auto; padding:0 20px }
-    header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px }
-    a { color:#0f3c7d; text-decoration:none }
-    .btn { padding:8px 14px; background:#0f3c7d; color:#fff; border:none; border-radius:6px; cursor:pointer }
-    .btn:hover { background:#0a2847 }
-    .btn-danger { background:#dc2626 }
-    .btn-danger:hover { background:#b91c1c }
+    :root { --bg:#f4f6fb; --card:#fff; --text:#111; --muted:#6b7280; --primary:#0f3c7d; --danger:#c92a2a; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, system-ui, Arial; background:var(--bg); color:var(--text); }
+    .page { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:32px; }
 
-    /* Login Form */
-    .login-container { max-width:400px; margin:60px auto; background:#fff; padding:30px; border-radius:8px; box-shadow:0 6px 20px rgba(2,6,23,.06) }
-    .login-container h2 { margin-bottom:20px; text-align:center }
-    .login-container input { width:100%; padding:10px; margin-bottom:12px; border:1px solid #e5e7eb; border-radius:6px }
-    .login-container button { width:100% }
-    .error { color:#dc2626; font-size:14px; margin-bottom:12px }
+    .card { width:100%; max-width:520px; background:var(--card); border-radius:18px; padding:32px; box-shadow:0 18px 50px rgba(2,6,23,.08); }
+    h1 { margin:0 0 16px; font-size:28px; text-align:center; }
+    .hint { margin:0 0 24px; text-align:center; color:#c92a2a; font-weight:600; }
 
-    /* Admin Panel */
-    .admin-panel { display:none }
-    .admin-panel.active { display:block }
-    .admin-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px }
+    .form-group { margin-bottom:18px; }
+    .form-label { display:block; font-size:14px; margin-bottom:8px; color:var(--muted); }
+    .form-control { width:100%; padding:12px 14px; border:1px solid #d2d6dc; border-radius:12px; font-size:15px; }
+    .form-control:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(15,60,125,.12); }
 
-    /* Post Form */
-    .post-form { background:#fff; padding:20px; border-radius:8px; box-shadow:0 6px 20px rgba(2,6,23,.06); margin-bottom:24px }
-    .form-group { margin-bottom:12px }
-    .form-group label { display:block; margin-bottom:6px; font-weight:500 }
-    input[type="text"], textarea { width:100%; padding:10px; border:1px solid #e5e7eb; border-radius:6px; font-family:inherit }
-    textarea { resize:vertical }
-    .form-group button { margin-top:10px }
+    button { width:100%; padding:12px 14px; border:none; border-radius:12px; font-size:16px; font-weight:600; cursor:pointer; }
+    .btn-primary { background:var(--primary); color:#fff; }
+    .btn-primary:hover { filter:brightness(1.06); }
+    .btn-secondary { background:#e5e7eb; color:#111; }
 
-    /* Posts List */
-    .posts-list { margin-top:24px }
-    .post-item { background:#fff; padding:16px; border-radius:8px; margin-bottom:12px; box-shadow:0 4px 14px rgba(2,6,23,.04) }
-    .post-item h3 { margin-bottom:8px; margin-top:0 }
-    .post-meta { color:#6b7280; font-size:13px; margin-bottom:10px }
-    .post-content { white-space:pre-wrap; margin-bottom:10px }
-    .post-actions { display:flex; gap:8px }
-    .empty-state { color:#6b7280; text-align:center; padding:40px 0 }
+    .footer { margin-top:24px; text-align:center; font-size:13px; color:var(--muted); }
+
+    .hidden { display:none !important; }
+
+    /* Management UI */
+    .manager { display:flex; flex-direction:column; gap:16px; }
+    .toolbar { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+    .toolbar .btn { width:auto; }
+
+    .posts-list { display:grid; gap:12px; }
+    .post-item { border:1px solid #e5e7eb; border-radius:12px; padding:14px 16px; background:#fff; display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+    .post-meta { font-size:13px; color:var(--muted); margin-top:4px; }
+
+    .post-actions { display:flex; gap:8px; }
+    .btn-danger { background:var(--danger); color:#fff; }
+    .btn-danger:hover { filter:brightness(1.08); }
+
+    .modal { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.45); padding:16px; z-index:100; opacity:0; pointer-events:none; transition:opacity .2s ease; }
+    .modal.active { opacity:1; pointer-events:auto; }
+    .modal-content { width:100%; max-width:520px; background:var(--card); border-radius:18px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.2); }
+    .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .modal-title { margin:0; font-size:20px; }
+    .modal-close { background:none; border:none; font-size:24px; cursor:pointer; color:var(--muted); }
+    .modal-close:hover { color:var(--text); }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Login Form -->
-    <div id="loginForm" class="login-container">
-      <h2>Đăng nhập Admin</h2>
-      <div id="loginError" class="error"></div>
-      <input type="password" id="adminPassword" placeholder="Nhập mật khẩu admin" />
-      <button class="btn" onclick="adminLogin()">Đăng nhập</button>
-      <p style="text-align:center; color:#6b7280; font-size:14px; margin-top:20px">
+  <div class="page">
+    <div class="card" id="loginCard">
+      <h1>Đăng nhập Admin</h1>
+      <div id="loginHint" class="hint hidden"></div>
+      <div class="form-group">
+        <label class="form-label" for="passwordInput">Vui lòng nhập mật khẩu</label>
+        <input id="passwordInput" class="form-control" type="password" placeholder="Nhập mật khẩu admin" autocomplete="current-password" />
+      </div>
+      <button id="loginBtn" class="btn btn-primary">Đăng nhập</button>
+      <div class="footer">
         <a href="index.html">← Quay về trang chủ</a>
-      </p>
+      </div>
     </div>
 
-    <!-- Admin Panel -->
-    <div id="adminPanel" class="admin-panel">
-      <div class="admin-header">
-        <h1>Quản lý bài viết</h1>
-        <button class="btn btn-danger" onclick="adminLogout()">Đăng xuất</button>
-      </div>
+    <div class="card hidden" id="managerCard">
+      <div class="manager">
+        <div class="toolbar">
+          <div>
+            <h1 style="margin:0; font-size:22px;">Quản lý bài viết</h1>
+            <div id="managerInfo" class="post-meta">Tải bài viết...</div>
+          </div>
+          <div class="post-actions">
+            <button id="addPostBtn" class="btn btn-primary">Thêm bài mới</button>
+            <button id="logoutBtn" class="btn btn-secondary">Đăng xuất</button>
+          </div>
+        </div>
 
-      <!-- Post Form -->
-      <div class="post-form">
-        <div class="form-group">
-          <label for="title">Tiêu đề</label>
-          <input type="text" id="title" placeholder="Tiêu đề bài viết" />
-        </div>
-        <div class="form-group">
-          <label for="content">Nội dung</label>
-          <textarea id="content" rows="6" placeholder="Viết nội dung ở đây..."></textarea>
-        </div>
-        <div class="form-group">
-          <button class="btn" onclick="publishPost()">Đăng bài</button>
-        </div>
+        <div id="postsList" class="posts-list"></div>
       </div>
-
-      <!-- Posts List -->
-      <h2>Bài viết đã đăng</h2>
-      <div id="postsList" class="posts-list"></div>
     </div>
   </div>
 
+  <div id="postModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle" class="modal-title">Thêm / Sửa bài viết</h2>
+        <button class="modal-close" aria-label="Đóng" onclick="closeModal()">✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="postTitle">Tiêu đề</label>
+        <input id="postTitle" class="form-control" type="text" placeholder="Nhập tiêu đề" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="postContent">Nội dung</label>
+        <textarea id="postContent" class="form-control" rows="7" placeholder="Nhập nội dung"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="postDate">Ngày</label>
+        <input id="postDate" class="form-control" type="datetime-local" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="postImage">Hình ảnh (tùy chọn)</label>
+        <input id="postImage" class="form-control" type="file" accept="image/*" />
+        <div id="imagePreview" style="margin-top:8px;"></div>
+      </div>
+      <button id="savePostBtn" class="btn btn-primary">Lưu</button>
+    </div>
+  </div>
+
+  <footer style="position:fixed; bottom:12px; left:0; right:0; text-align:center; font-size:12px; color:var(--muted);">
+    © 2025 Vanlam technologies. All rights reserved.
+  </footer>
+
   <script>
-    const ADMIN_PASSWORD = 'admin123';
     const POSTS_KEY = 'vl_posts_v1';
-    const AUTH_KEY = 'vl_admin_auth';
+    const ADMIN_PASSWORD = 'admin123'; // Thay đổi mật khẩu ở đây
 
-    function checkAuth(){
-      return localStorage.getItem(AUTH_KEY) === 'true';
+    const loginCard = document.getElementById('loginCard');
+    const managerCard = document.getElementById('managerCard');
+    const loginHint = document.getElementById('loginHint');
+
+    const passwordInput = document.getElementById('passwordInput');
+    const loginBtn = document.getElementById('loginBtn');
+
+    const addPostBtn = document.getElementById('addPostBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const postsList = document.getElementById('postsList');
+    const managerInfo = document.getElementById('managerInfo');
+
+    const postModal = document.getElementById('postModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const postTitle = document.getElementById('postTitle');
+    const postContent = document.getElementById('postContent');
+    const postDate = document.getElementById('postDate');
+    const postImage = document.getElementById('postImage');
+    const savePostBtn = document.getElementById('savePostBtn');
+
+    let editingId = null;
+
+    function loadPosts() {
+      try { return JSON.parse(localStorage.getItem(POSTS_KEY) || '[]'); }
+      catch (e) { return []; }
     }
 
-    function adminLogin(){
-      const pwd = document.getElementById('adminPassword').value;
-      const errorEl = document.getElementById('loginError');
-      
-      if(!pwd){
-        errorEl.textContent = 'Vui lòng nhập mật khẩu';
+    function savePosts(posts) {
+      localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+    }
+
+    function formatDate(dateStr) {
+      return new Date(dateStr).toLocaleString('vi-VN', { year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    }
+
+    function readFileAsDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderPosts() {
+      const posts = loadPosts().sort((a,b) => new Date(b.date) - new Date(a.date));
+      managerInfo.textContent = `${posts.length} bài viết`; 
+      if (!posts.length) {
+        postsList.innerHTML = '<div style="padding:18px; border:1px dashed #cbd5e1; border-radius:12px; text-align:center; color:#6b7280;">Chưa có bài viết nào.</div>';
         return;
       }
-      
-      if(pwd === ADMIN_PASSWORD){
-        localStorage.setItem(AUTH_KEY, 'true');
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('adminPanel').classList.add('active');
-        renderPosts();
-      } else {
-        errorEl.textContent = 'Mật khẩu không chính xác';
-        document.getElementById('adminPassword').value = '';
-      }
-    }
 
-    function adminLogout(){
-      localStorage.removeItem(AUTH_KEY);
-      document.getElementById('adminPanel').classList.remove('active');
-      document.getElementById('loginForm').style.display = 'block';
-      document.getElementById('adminPassword').value = '';
-      document.getElementById('loginError').textContent = '';
-    }
-
-    function loadPosts(){
-      try{ return JSON.parse(localStorage.getItem(POSTS_KEY) || '[]') }catch(e){ return [] }
-    }
-
-    function savePosts(posts){ localStorage.setItem(POSTS_KEY, JSON.stringify(posts)) }
-
-    function publishPost(){
-      const title = document.getElementById('title').value.trim();
-      const content = document.getElementById('content').value.trim();
-      
-      if(!title || !content){
-        alert('Vui lòng nhập tiêu đề và nội dung');
-        return;
-      }
-      
-      const posts = loadPosts();
-      const post = {
-        id: Date.now(),
-        title,
-        content,
-        date: new Date().toISOString()
-      };
-      
-      posts.unshift(post);
-      savePosts(posts);
-      document.getElementById('title').value = '';
-      document.getElementById('content').value = '';
-      renderPosts();
-    }
-
-    function deletePost(id){
-      if(!confirm('Bạn chắc chắn muốn xóa bài này?')) return;
-      let posts = loadPosts();
-      posts = posts.filter(p => p.id !== id);
-      savePosts(posts);
-      renderPosts();
-    }
-
-    function renderPosts(){
-      const container = document.getElementById('postsList');
-      const posts = loadPosts();
-      
-      if(!posts.length){
-        container.innerHTML = '<div class="empty-state">Chưa có bài viết nào</div>';
-        return;
-      }
-      
-      container.innerHTML = posts.map(p => `
-        <div class="post-item">
-          <h3>${escapeHtml(p.title)}</h3>
-          <div class="post-meta">${new Date(p.date).toLocaleString('vi-VN')}</div>
-          <div class="post-content">${escapeHtml(p.content)}</div>
-          <div class="post-actions">
-            <button class="btn btn-danger" onclick="deletePost(${p.id})">Xóa</button>
+      postsList.innerHTML = posts.map(p => {
+        const preview = p.content.length > 100 ? p.content.substring(0, 100) + '…' : p.content;
+        const imageHtml = p.image ? `<img src="${p.image}" style="max-width:100%; height:auto; margin-bottom:8px; border-radius:8px;" />` : '';
+        return `
+          <div class="post-item" data-id="${p.id}">
+            <div style="flex:1;">
+              <strong>${escapeHtml(p.title)}</strong>
+              <div class="post-meta">${formatDate(p.date)}</div>
+              ${imageHtml}
+              <div style="margin-top:8px; color:#4b5563; font-size:14px; white-space:pre-wrap;">${escapeHtml(preview)}</div>
+            </div>
+            <div class="post-actions">
+              <button class="btn btn-secondary" onclick="openEdit('${p.id}')">Sửa</button>
+              <button class="btn btn-danger" onclick="deletePost('${p.id}')">Xóa</button>
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
-    function escapeHtml(s){
+    function escapeHtml(s) {
       return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
-    // On page load
-    if(checkAuth()){
-      document.getElementById('loginForm').style.display = 'none';
-      document.getElementById('adminPanel').classList.add('active');
+    function showManager() {
+      loginCard.classList.add('hidden');
+      managerCard.classList.remove('hidden');
       renderPosts();
     }
+
+    function showLogin(message) {
+      managerCard.classList.add('hidden');
+      loginCard.classList.remove('hidden');
+      if (message) {
+        loginHint.textContent = message;
+        loginHint.classList.remove('hidden');
+      } else {
+        loginHint.classList.add('hidden');
+      }
+      passwordInput.value = '';
+      passwordInput.focus();
+    }
+
+    function checkAuth() {
+      return sessionStorage.getItem('vl_admin_authed') === '1';
+    }
+
+    function setAuth(value) {
+      if (value) sessionStorage.setItem('vl_admin_authed', '1');
+      else sessionStorage.removeItem('vl_admin_authed');
+    }
+
+    function openModal(post = null) {
+      postModal.classList.add('active');
+      if (post) {
+        editingId = post.id;
+        modalTitle.textContent = 'Sửa bài viết';
+        postTitle.value = post.title;
+        postContent.value = post.content;
+        postDate.value = new Date(post.date).toISOString().slice(0,16);
+        document.getElementById('imagePreview').innerHTML = post.image ? `<img src="${post.image}" style="max-width:100%; height:auto; border-radius:8px;" />` : '';
+      } else {
+        editingId = null;
+        modalTitle.textContent = 'Thêm bài viết';
+        postTitle.value = '';
+        postContent.value = '';
+        postDate.value = new Date().toISOString().slice(0,16);
+        document.getElementById('imagePreview').innerHTML = '';
+      }
+      postImage.value = '';
+      postTitle.focus();
+    }
+
+    function closeModal() {
+      postModal.classList.remove('active');
+    }
+
+    async function savePost() {
+      const title = postTitle.value.trim();
+      const content = postContent.value.trim();
+      const date = postDate.value;
+
+      if (!title || !content || !date) {
+        alert('Vui lòng điền đầy đủ tiêu đề, nội dung và ngày.');
+        return;
+      }
+
+      let image = null;
+      if (postImage.files[0]) {
+        image = await readFileAsDataURL(postImage.files[0]);
+      }
+
+      const posts = loadPosts();
+      if (editingId) {
+        const idx = posts.findIndex(p => p.id === editingId);
+        if (idx !== -1) {
+          posts[idx] = { ...posts[idx], title, content, date, image: image || posts[idx].image };
+        }
+      } else {
+        posts.push({ id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(), title, content, date, image });
+      }
+
+      savePosts(posts);
+      closeModal();
+      renderPosts();
+    }
+
+    function openEdit(id) {
+      const posts = loadPosts();
+      const post = posts.find(p => p.id === id);
+      if (!post) return;
+      openModal(post);
+    }
+
+    function deletePost(id) {
+      if (!confirm('Xóa bài viết này?')) return;
+      const posts = loadPosts().filter(p => p.id !== id);
+      savePosts(posts);
+      renderPosts();
+    }
+
+    loginBtn.addEventListener('click', () => {
+      const value = passwordInput.value.trim();
+      if (value === ADMIN_PASSWORD) {
+        setAuth(true);
+        showManager();
+      } else {
+        showLogin('Mật khẩu không đúng, vui lòng thử lại.');
+      }
+    });
+
+    passwordInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') loginBtn.click();
+    });
+
+    addPostBtn.addEventListener('click', () => openModal());
+    logoutBtn.addEventListener('click', () => {
+      setAuth(false);
+      showLogin();
+    });
+
+    savePostBtn.addEventListener('click', async () => {
+      await savePost();
+    });
+
+    postModal.addEventListener('click', (e) => {
+      if (e.target === postModal) closeModal();
+    });
+
+    // Init
+    if (checkAuth()) showManager();
+    else showLogin();
   </script>
-
-  <!-- Facebook Messenger Chat Plugin -->
-  <div id="fb-root"></div>
-  <script>
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId: '1234567890',
-        xfbml: true,
-        version: 'v18.0'
-      });
-    };
-
-    (function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-  </script>
-
-  <div class="fb-customerchat"
-    page_id="100086614949913"
-    attribution="setup_tool"
-    logged_in_greeting="Xin chào! Có gì tôi có thể giúp bạn?"
-    logged_out_greeting="Xin chào! Có gì tôi có thể giúp bạn?">
-  </div>
-
 </body>
 </html>

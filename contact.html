@@ -194,71 +194,6 @@
       color: #fff;
     }
 
-    /* Consultation Section */
-    .consultation-section {
-      background: var(--light);
-      padding: 70px 20px;
-    }
-
-    .consultation-wrapper {
-      max-width: 800px;
-      margin: auto;
-      background: #fff;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .consultation-wrapper h2 {
-      color: var(--primary);
-      font-size: 28px;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-
-    .consultation-wrapper > p {
-      text-align: center;
-      color: var(--muted);
-      margin-bottom: 30px;
-      font-size: 16px;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .form-row.full {
-      grid-template-columns: 1fr;
-    }
-
-    .services-list {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .service-checkbox {
-      display: flex;
-      align-items: center;
-    }
-
-    .service-checkbox input {
-      width: 18px;
-      height: 18px;
-      margin-right: 10px;
-      cursor: pointer;
-      accent-color: var(--primary);
-    }
-
-    .service-checkbox label {
-      margin: 0;
-      cursor: pointer;
-      font-weight: 400;
-    }
-
     footer {
       background: #020617;
       color: #9ca3af;
@@ -273,15 +208,6 @@
         grid-template-columns: 1fr;
         gap: 30px;
       }
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-      .services-list {
-        grid-template-columns: 1fr;
-      }
-      .consultation-wrapper {
-        padding: 20px;
-      }
     }
   </style>
 </head>
@@ -290,7 +216,7 @@
   <!-- Header -->
   <header>
     <div class="container nav">
-      <div class="logo">Vanlam technologies</div>
+      <div class="logo">vanLam technologies</div>
       <nav class="menu">
         <a href="index.html">Trang chủ</a>
         <a href="services.html">Dịch vụ</a>
@@ -330,7 +256,7 @@
 
           <div class="contact-item">
             <h3>Thuduc city</h3>
-            <p>Vanlam technologies<br>
+            <p>VanLam Consulting<br>
             HCMC, Vietnam</p>
           </div>
 
@@ -358,17 +284,17 @@
             </div>
 
             <div class="form-group">
-              <label for="email">Email *</label>
+              <label for="email">khoasu.tech020@gmail.com *</label>
               <input type="email" id="email" name="email" required>
             </div>
 
             <div class="form-group">
-              <label for="phone">Số điện thoại</label>
+              <label for="phone">0912 818 815</label>
               <input type="tel" id="phone" name="phone">
             </div>
 
             <div class="form-group">
-              <label for="company">Công ty</label>
+              <label for="company">Vanlam technologies</label>
               <input type="text" id="company" name="company">
             </div>
 
@@ -386,74 +312,6 @@
           </form>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- Consultation Section -->
-  <section class="consultation-section">
-    <div class="consultation-wrapper">
-      <h2>🎯 Yêu cầu tư vấn dịch vụ</h2>
-      <p>Điền form dưới đây để nhận tư vấn miễn phí từ chuyên gia của chúng tôi</p>
-
-      <form method="POST" action="https://formsubmit.co/khoasu.tech020@gmail.com" onsubmit="return handleConsultationSubmit(event)">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="cons_name">Họ và tên *</label>
-            <input type="text" id="cons_name" name="name" required>
-          </div>
-          <div class="form-group">
-            <label for="cons_phone">Số điện thoại *</label>
-            <input type="tel" id="cons_phone" name="phone" required>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="cons_email">Email</label>
-            <input type="email" id="cons_email" name="email">
-          </div>
-          <div class="form-group">
-            <label for="cons_company">Tên công ty</label>
-            <input type="text" id="cons_company" name="company">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label style="display: block; margin-bottom: 12px; font-weight: 500;">Bạn quan tâm đến dịch vụ nào? *</label>
-          <div class="services-list">
-            <div class="service-checkbox">
-              <input type="checkbox" id="service_digital" name="services" value="Tư vấn chuyển đổi số">
-              <label for="service_digital">Tư vấn chuyển đổi số</label>
-            </div>
-            <div class="service-checkbox">
-              <input type="checkbox" id="service_cloud" name="services" value="Hạ tầng CNTT & Cloud">
-              <label for="service_cloud">Hạ tầng CNTT & Cloud</label>
-            </div>
-            <div class="service-checkbox">
-              <input type="checkbox" id="service_elv" name="services" value="Giải pháp ELV">
-              <label for="service_elv">Giải pháp ELV</label>
-            </div>
-            <div class="service-checkbox">
-              <input type="checkbox" id="service_maintenance" name="services" value="Vận hành & Bảo trì">
-              <label for="service_maintenance">Vận hành & Bảo trì</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group form-row full">
-          <label for="cons_requirement">Chi tiết yêu cầu tư vấn *</label>
-          <textarea id="cons_requirement" name="requirement" placeholder="Mô tả nhu cầu của bạn, quy mô doanh nghiệp, mục tiêu, v.v." required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label style="display: flex; align-items: center; font-weight: 400; cursor: pointer; margin-bottom: 0;">
-            <input type="checkbox" id="cons_agree" name="cons_agree" required style="width: 18px; height: 18px; margin-right: 10px; margin-bottom: 0; accent-color: var(--primary);">
-            Tôi đồng ý được liên hệ để nhận tư vấn
-          </label>
-        </div>
-
-        <button type="submit" class="btn" style="width: 100%; margin-top: 20px;">Gửi yêu cầu tư vấn</button>
-      </form>
     </div>
   </section>
 
@@ -475,58 +333,7 @@
       alert('Cảm ơn ' + name + '! Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.');
       event.target.reset();
     }
-
-    function handleConsultationSubmit(event) {
-      const services = Array.from(document.querySelectorAll('input[name="services"]:checked'));
-      if(services.length === 0) {
-        event.preventDefault();
-        alert('Vui lòng chọn ít nhất một dịch vụ');
-        return false;
-      }
-      
-      // Add services as hidden field for FormSubmit
-      const servicesStr = services.map(c => c.value).join(', ');
-      const hiddenField = document.createElement('input');
-      hiddenField.type = 'hidden';
-      hiddenField.name = 'services';
-      hiddenField.value = servicesStr;
-      event.target.appendChild(hiddenField);
-      
-      // Redirect to home page after form submission
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 500);
-      
-      return true;
-    }
   </script>
-
-  <!-- Facebook Messenger Chat Plugin -->
-  <div id="fb-root"></div>
-  <script>
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId: '1234567890', // Replace with your App ID
-        xfbml: true,
-        version: 'v18.0'
-      });
-    };
-
-    (function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-  </script>
-
-  <div class="fb-customerchat"
-    page_id="100086614949913"
-    attribution="setup_tool"
-    logged_in_greeting="Xin chào! Có gì tôi có thể giúp bạn?"
-    logged_out_greeting="Xin chào! Có gì tôi có thể giúp bạn?">
-  </div>
 
 </body>
 </html>
