@@ -214,6 +214,7 @@
     document.addEventListener('click', (e) => {
       const directButton = e.target.closest('.add-direct-cart');
       if (directButton) {
+        e.stopPropagation();
         const card = directButton.closest('.product-card');
         if (!card) return;
 
@@ -222,6 +223,15 @@
         const price = parseFloat(card.dataset.price);
         const image = decodeURIComponent(card.dataset.image);
         addToCart(id, name, price, image, 1);
+        return;
+      }
+
+      const card = e.target.closest('.product-card');
+      if (card) {
+        const id = card.dataset.id;
+        const name = decodeURIComponent(card.dataset.name);
+        const price = parseFloat(card.dataset.price);
+        const image = decodeURIComponent(card.dataset.image);
         const description = decodeURIComponent(card.dataset.description || '');
         openProductModal(id, name, price, image, description);
       }
