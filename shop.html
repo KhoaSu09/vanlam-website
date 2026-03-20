@@ -221,16 +221,7 @@
         const name = decodeURIComponent(card.dataset.name);
         const price = parseFloat(card.dataset.price);
         const image = decodeURIComponent(card.dataset.image);
-        addToCart(id, name, price, image);
-        return;
-      }
-
-      const card = e.target.closest('.product-card');
-      if (card) {
-        const id = card.dataset.id;
-        const name = decodeURIComponent(card.dataset.name);
-        const price = parseFloat(card.dataset.price);
-        const image = decodeURIComponent(card.dataset.image);
+        addToCart(id, name, price, image, 1);
         const description = decodeURIComponent(card.dataset.description || '');
         openProductModal(id, name, price, image, description);
       }
@@ -249,14 +240,14 @@
       updateCartCount();
     }
 
-    function addToCart(id, name, price, image) {
-      console.log('Adding to cart:', id, name, price, image);
+    function addToCart(id, name, price, image, quantity = 1) {
+      console.log('Adding to cart:', id, name, price, image, quantity);
       const cart = getCart();
       const existing = cart.find(item => item.id === id);
       if (existing) {
-        existing.quantity += 1;
+        existing.quantity += quantity;
       } else {
-        cart.push({ id, name, price, image, quantity: 1 });
+        cart.push({ id, name, price, image, quantity });
       }
       saveCart(cart);
       alert('Đã thêm vào giỏ hàng!');
@@ -292,6 +283,11 @@
           <div class="cart-item-details">
             <h4 class="cart-item-title">${escapeHtml(item.name)}</h4>
             <div class="cart-item-price">${formatPrice(item.price)} x ${item.quantity}</div>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+              <button style="padding:4px 8px; font-size:12px;" onclick="changeCartQuantity('${item.id}', -1)">-</button>
+              <span>${item.quantity}</span>
+              <button style="padding:4px 8px; font-size:12px;" onclick="changeCartQuantity('${item.id}', 1)">+</button>
+            </div>
           </div>
           <button class="remove-item" onclick="removeFromCart('${item.id}')">Xóa</button>
         </div>
@@ -299,6 +295,15 @@
 
       const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
       cartTotal.textContent = `Tổng: ${formatPrice(total)}`;
+    }
+
+    function changeCartQuantity(id, delta) {
+      const cart = getCart();
+      const item = cart.find(i => i.id === id);
+      if (!item) return;
+      item.quantity = Math.max(1, item.quantity + delta);
+      saveCart(cart);
+      renderCart();
     }
 
     function openCart() {
