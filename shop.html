@@ -181,8 +181,8 @@
             <div class="product-price">${formatPrice(p.price)}</div>
             <p class="product-description">${escapeHtml(getPreview(p.description))}</p>
             <div style="display:flex; gap:8px; margin-top:12px;">
-              <button class="add-to-cart add-direct-cart">Thêm vào giỏ</button>
-              <button class="add-to-cart" style="background:#f3f4f6; color:#0f3c7d;">Xem chi tiết</button>
+              <button class="add-to-cart add-direct-cart" onclick="event.stopPropagation(); handleAddToCart('${p.id}')">Thêm vào giỏ</button>
+              <button class="add-to-cart view-details" onclick="event.stopPropagation(); handleViewDetails('${p.id}')" style="background:#f3f4f6; color:#0f3c7d;">Xem chi tiết</button>
             </div>
           </div>
         </article>
@@ -242,32 +242,41 @@
 
     renderProducts();
 
-    // Add event listeners for product actions
+    // Add event listeners for product card click (open detail)
     document.addEventListener('click', (e) => {
-      const directButton = e.target.closest('.add-direct-cart');
-      if (directButton) {
-        e.stopPropagation();
-        const card = directButton.closest('.product-card');
-        if (!card) return;
-
-        const id = card.dataset.id;
-        const name = decodeURIComponent(card.dataset.name);
-        const price = parseFloat(card.dataset.price);
-        const image = decodeURIComponent(card.dataset.image);
-        addToCart(id, name, price, image, 1);
-        return;
-      }
-
       const card = e.target.closest('.product-card');
-      if (card) {
-        const id = card.dataset.id;
-        const name = decodeURIComponent(card.dataset.name);
-        const price = parseFloat(card.dataset.price);
-        const image = decodeURIComponent(card.dataset.image);
-        const description = decodeURIComponent(card.dataset.description || '');
-        openProductModal(id, name, price, image, description);
-      }
+      if (!card) return;
+
+      const id = card.dataset.id;
+      const name = decodeURIComponent(card.dataset.name);
+      const price = parseFloat(card.dataset.price);
+      const image = decodeURIComponent(card.dataset.image);
+      const description = decodeURIComponent(card.dataset.description || '');
+      openProductModal(id, name, price, image, description);
     });
+
+    function handleAddToCart(productId) {
+      const card = document.querySelector(`.product-card[data-id="${productId}"]`);
+      if (!card) return;
+
+      const id = card.dataset.id;
+      const name = decodeURIComponent(card.dataset.name);
+      const price = parseFloat(card.dataset.price);
+      const image = decodeURIComponent(card.dataset.image);
+      addToCart(id, name, price, image, 1);
+    }
+
+    function handleViewDetails(productId) {
+      const card = document.querySelector(`.product-card[data-id="${productId}"]`);
+      if (!card) return;
+
+      const id = card.dataset.id;
+      const name = decodeURIComponent(card.dataset.name);
+      const price = parseFloat(card.dataset.price);
+      const image = decodeURIComponent(card.dataset.image);
+      const description = decodeURIComponent(card.dataset.description || '');
+      openProductModal(id, name, price, image, description);
+    }
 
     // Cart functions
     const CART_KEY = 'vl_cart';
@@ -283,6 +292,12 @@
     }
 
     function addToCart(id, name, price, image, quantity = 1) {
+      if (!id || !name || isNaN(price) || price < 0 || quantity < 1) {
+        console.warn('Invalid addToCart call', {id,name,price,quantity});
+        alert('Sản phẩm không hợp lệ, vui lòng thử lại.');
+        return;
+      }
+
       console.log('Adding to cart:', id, name, price, image, quantity);
       const cart = getCart();
       const existing = cart.find(item => item.id === id);
@@ -292,6 +307,7 @@
         cart.push({ id, name, price, image, quantity });
       }
       saveCart(cart);
+      updateCartCount();
       alert('Đã thêm vào giỏ hàng!');
     }
 
