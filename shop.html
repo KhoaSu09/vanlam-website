@@ -112,7 +112,21 @@
       <h3>Giỏ hàng</h3>
       <div id="cartItems"></div>
       <div id="cartTotal" class="cart-total">Tổng: 0 VNĐ</div>
-      <button class="checkout-btn" onclick="checkout()">Thanh toán</button>
+
+      <div id="checkoutSection" style="margin-top:16px;">
+        <button class="checkout-btn" onclick="showCheckoutForm()">Thanh toán</button>
+      </div>
+
+      <div id="checkoutForm" style="display:none; margin-top:16px; border-top:1px solid #e5e7eb; padding-top:16px;">
+        <h4>Thông tin thanh toán</h4>
+        <div style="margin-bottom:10px;"><input id="customerName" type="text" placeholder="Họ và tên" style="width:100%;padding:8px;" /></div>
+        <div style="margin-bottom:10px;"><input id="customerPhone" type="tel" placeholder="Số điện thoại" style="width:100%;padding:8px;" /></div>
+        <div style="margin-bottom:10px;"><input id="customerEmail" type="email" placeholder="Email" style="width:100%;padding:8px;" /></div>
+        <div style="margin-bottom:10px;"><textarea id="customerAddress" placeholder="Địa chỉ giao hàng" style="width:100%;padding:8px;height:80px;"></textarea></div>
+        <button class="checkout-btn" onclick="processCheckout()">Xác nhận đặt hàng</button>
+        <button class="close-modal" style="margin-top:8px;" onclick="hideCheckoutForm()">Hủy</button>
+      </div>
+
       <button class="close-modal" style="margin-top:12px;" onclick="closeCart()">Đóng</button>
     </div>
   </div>
@@ -336,8 +350,53 @@
       document.getElementById('cartModal').classList.remove('active');
     }
 
-    function checkout() {
-      alert('Tính năng thanh toán sẽ được phát triển sau. Liên hệ: khoasu.tech020@gmail.com');
+    function showCheckoutForm() {
+      document.getElementById('checkoutSection').style.display = 'none';
+      document.getElementById('checkoutForm').style.display = 'block';
+    }
+
+    function hideCheckoutForm() {
+      document.getElementById('checkoutForm').style.display = 'none';
+      document.getElementById('checkoutSection').style.display = 'block';
+    }
+
+    function processCheckout() {
+      const name = document.getElementById('customerName').value.trim();
+      const phone = document.getElementById('customerPhone').value.trim();
+      const email = document.getElementById('customerEmail').value.trim();
+      const address = document.getElementById('customerAddress').value.trim();
+      const cart = getCart();
+
+      if (!cart.length) {
+        alert('Giỏ hàng đang trống. Vui lòng thêm sản phẩm trước khi thanh toán.');
+        return;
+      }
+      if (!name || !phone || !email || !address) {
+        alert('Vui lòng điền đầy đủ thông tin thanh toán.');
+        return;
+      }
+
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const order = {
+        id: 'order_' + Date.now(),
+        date: new Date().toISOString(),
+        customer: { name, phone, email, address },
+        items: cart,
+        total
+      };
+
+      // tạm lưu đơn hàng vào localStorage order history
+      const ordersKey = 'vl_orders_v1';
+      const orders = JSON.parse(localStorage.getItem(ordersKey) || '[]');
+      orders.push(order);
+      localStorage.setItem(ordersKey, JSON.stringify(orders));
+
+      localStorage.removeItem(CART_KEY);
+      updateCartCount();
+      renderCart();
+      hideCheckoutForm();
+
+      alert(`Đặt hàng thành công! Mã đơn hàng: ${order.id} (Tổng ${formatPrice(total)})`);
     }
 
     // Product modal functions
