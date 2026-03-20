@@ -32,6 +32,20 @@
     .add-to-cart { display:block; margin-top:12px; padding:8px 12px; background:#0f3c7d; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:14px; text-align:center; }
     .add-to-cart:hover { background:#0d2a5c; }
 
+    .product-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center }
+    .product-modal.active { display:flex }
+    .product-modal-content { background:#fff; border-radius:12px; padding:20px; max-width:600px; max-height:80vh; overflow-y:auto; }
+    .product-modal-image { width:100%; max-height:300px; object-fit:cover; border-radius:8px; margin-bottom:16px; }
+    .product-modal-title { font-size:24px; font-weight:700; color:#0f3c7d; margin:0 0 8px; }
+    .product-modal-price { font-size:20px; font-weight:700; color:#0f3c7d; margin-bottom:16px; }
+    .product-modal-description { color:#4b5563; line-height:1.6; margin-bottom:20px; }
+    .product-modal-actions { display:flex; gap:12px; }
+    .product-modal-actions button { flex:1; padding:12px; border:none; border-radius:8px; font-size:16px; cursor:pointer; }
+    .add-to-cart-modal { background:#0f3c7d; color:#fff; }
+    .add-to-cart-modal:hover { background:#0d2a5c; }
+    .close-modal { background:#e5e7eb; color:#111; }
+    .close-modal:hover { background:#d1d5db; }
+
     .cart-icon { position:fixed; top:20px; right:20px; background:#0f3c7d; color:#fff; border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:20px; z-index:1000; }
     .cart-count { position:absolute; top:-5px; right:-5px; background:#c92a2a; color:#fff; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-size:12px; }
 
@@ -78,14 +92,17 @@
     <div class="cart-count" id="cartCount">0</div>
   </div>
 
-  <!-- Cart Modal -->
-  <div id="cartModal" class="cart-modal">
-    <div class="cart-content">
-      <h2>Giỏ hàng</h2>
-      <div id="cartItems"></div>
-      <div class="cart-total" id="cartTotal">Tổng: 0 VNĐ</div>
-      <button class="checkout-btn" onclick="checkout()">Thanh toán</button>
-      <button onclick="closeCart()" style="margin-top:10px; width:100%; padding:8px; background:#e5e7eb; color:#111; border:none; border-radius:8px; cursor:pointer;">Đóng</button>
+  <!-- Product Detail Modal -->
+  <div id="productModal" class="product-modal">
+    <div class="product-modal-content">
+      <img id="productModalImage" class="product-modal-image" src="" alt="" />
+      <h2 id="productModalTitle" class="product-modal-title"></h2>
+      <div id="productModalPrice" class="product-modal-price"></div>
+      <p id="productModalDescription" class="product-modal-description"></p>
+      <div class="product-modal-actions">
+        <button class="add-to-cart-modal" onclick="addToCartFromModal()">Thêm vào giỏ</button>
+        <button class="close-modal" onclick="closeProductModal()">Đóng</button>
+      </div>
     </div>
   </div>
 
@@ -125,13 +142,13 @@
       container.innerHTML = products.map(p => {
         const imageHtml = p.image ? `<img class="product-image" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy" />` : '';
         return `
-        <article class="product-card" data-id="${p.id}" data-name="${encodeURIComponent(p.name)}" data-price="${p.price}" data-image="${encodeURIComponent(p.image || '')}">
+        <article class="product-card" data-id="${p.id}" data-name="${encodeURIComponent(p.name)}" data-price="${p.price}" data-image="${encodeURIComponent(p.image || '')}" data-description="${encodeURIComponent(p.description)}">
           ${imageHtml}
           <div class="product-header">
             <h2 class="product-title">${escapeHtml(p.name)}</h2>
             <div class="product-price">${formatPrice(p.price)}</div>
             <p class="product-description">${escapeHtml(getPreview(p.description))}</p>
-            <button class="add-to-cart">Thêm vào giỏ</button>
+            <button class="add-to-cart">Xem chi tiết</button>
           </div>
         </article>
       `;
@@ -190,23 +207,22 @@
 
     renderProducts();
 
-    // Add event listeners for add to cart buttons
+    // Add event listeners for product cards
     document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('add-to-cart')) {
-        console.log('Add to cart button clicked');
-        const card = e.target.closest('.product-card');
-        console.log('Card:', card);
+      const card = e.target.closest('.product-card');
+      if (card) {
         const id = card.dataset.id;
         const name = decodeURIComponent(card.dataset.name);
         const price = parseFloat(card.dataset.price);
         const image = decodeURIComponent(card.dataset.image);
-        console.log('Data:', id, name, price, image);
-        addToCart(id, name, price, image);
+        const description = card.dataset.description; // Need to add this
+        openProductModal(id, name, price, image, description);
       }
     });
 
     // Cart functions
     const CART_KEY = 'vl_cart';
+    let currentProduct = null;
 
     function getCart() {
       try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch(e) { return []; }
@@ -239,6 +255,7 @@
     function updateCartCount() {
       const cart = getCart();
       const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      console.log('Cart count:', count);
       document.getElementById('cartCount').textContent = count;
     }
 
@@ -279,6 +296,29 @@
 
     function checkout() {
       alert('Tính năng thanh toán sẽ được phát triển sau. Liên hệ: khoasu.tech020@gmail.com');
+    }
+
+    // Product modal functions
+    function openProductModal(id, name, price, image, description) {
+      currentProduct = { id, name, price, image, description };
+      document.getElementById('productModalImage').src = image || '';
+      document.getElementById('productModalImage').alt = name;
+      document.getElementById('productModalTitle').textContent = name;
+      document.getElementById('productModalPrice').textContent = formatPrice(price);
+      document.getElementById('productModalDescription').textContent = description;
+      document.getElementById('productModal').classList.add('active');
+    }
+
+    function closeProductModal() {
+      document.getElementById('productModal').classList.remove('active');
+      currentProduct = null;
+    }
+
+    function addToCartFromModal() {
+      if (currentProduct) {
+        addToCart(currentProduct.id, currentProduct.name, currentProduct.price, currentProduct.image);
+        closeProductModal();
+      }
     }
 
     // Init cart count
