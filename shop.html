@@ -148,7 +148,10 @@
             <h2 class="product-title">${escapeHtml(p.name)}</h2>
             <div class="product-price">${formatPrice(p.price)}</div>
             <p class="product-description">${escapeHtml(getPreview(p.description))}</p>
-            <button class="add-to-cart">Xem chi tiết</button>
+            <div style="display:flex; gap:8px; margin-top:12px;">
+              <button class="add-to-cart add-direct-cart">Thêm vào giỏ</button>
+              <button class="add-to-cart" style="background:#f3f4f6; color:#0f3c7d;">Xem chi tiết</button>
+            </div>
           </div>
         </article>
       `;
@@ -207,15 +210,28 @@
 
     renderProducts();
 
-    // Add event listeners for product cards
+    // Add event listeners for product actions
     document.addEventListener('click', (e) => {
+      const directButton = e.target.closest('.add-direct-cart');
+      if (directButton) {
+        const card = directButton.closest('.product-card');
+        if (!card) return;
+
+        const id = card.dataset.id;
+        const name = decodeURIComponent(card.dataset.name);
+        const price = parseFloat(card.dataset.price);
+        const image = decodeURIComponent(card.dataset.image);
+        addToCart(id, name, price, image);
+        return;
+      }
+
       const card = e.target.closest('.product-card');
       if (card) {
         const id = card.dataset.id;
         const name = decodeURIComponent(card.dataset.name);
         const price = parseFloat(card.dataset.price);
         const image = decodeURIComponent(card.dataset.image);
-        const description = card.dataset.description; // Need to add this
+        const description = decodeURIComponent(card.dataset.description || '');
         openProductModal(id, name, price, image, description);
       }
     });
