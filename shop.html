@@ -62,6 +62,11 @@
     .checkout-btn { width:100%; padding:12px; background:#0f3c7d; color:#fff; border:none; border-radius:8px; font-size:16px; cursor:pointer; }
     .checkout-btn:hover { background:#0d2a5c; }
 
+    .order-message { font-size:14px; margin-bottom:12px; color:#065f46; background:#ecfdf5; border:1px solid #a7f3d0; padding:10px; border-radius:8px; }
+    .order-history { margin-top:14px; border-top:1px solid #e5e7eb; padding-top:12px; }
+    .order-history h4 { margin:0 0 8px; font-size:16px; }
+    .order-history-item { font-size:14px; color:#374151; margin-bottom:6px; }
+
     .empty-state { text-align:center; color:#6b7280; padding:60px 20px }
     .empty-state p { margin:0 }
 
@@ -117,6 +122,7 @@
         <button class="checkout-btn" onclick="showCheckoutForm()">Thanh toán</button>
       </div>
 
+      <div id="orderMessage" class="order-message" style="display:none;"></div>
       <div id="checkoutForm" style="display:none; margin-top:16px; border-top:1px solid #e5e7eb; padding-top:16px;">
         <h4>Thông tin thanh toán</h4>
         <div style="margin-bottom:10px;"><input id="customerName" type="text" placeholder="Họ và tên" style="width:100%;padding:8px;" /></div>
@@ -126,6 +132,7 @@
         <button class="checkout-btn" onclick="processCheckout()">Xác nhận đặt hàng</button>
         <button class="close-modal" style="margin-top:8px;" onclick="hideCheckoutForm()">Hủy</button>
       </div>
+      <div id="orderHistory" class="order-history"></div>
 
       <button class="close-modal" style="margin-top:12px;" onclick="closeCart()">Đóng</button>
     </div>
@@ -395,8 +402,32 @@
       updateCartCount();
       renderCart();
       hideCheckoutForm();
+      renderOrderHistory();
+
+      const orderMessageEl = document.getElementById('orderMessage');
+      orderMessageEl.textContent = `Đặt hàng thành công! Mã đơn hàng: ${order.id}. Hệ thống sẽ liên hệ sớm nhất.`;
+      orderMessageEl.style.display = 'block';
 
       alert(`Đặt hàng thành công! Mã đơn hàng: ${order.id} (Tổng ${formatPrice(total)})`);
+    }
+
+    const ORDERS_KEY = 'vl_orders_v1';
+
+    function loadOrders() {
+      try { return JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]'); }
+      catch (e) { return []; }
+    }
+
+    function renderOrderHistory() {
+      const orderHistory = document.getElementById('orderHistory');
+      const orders = loadOrders().slice(-5).reverse();
+      if (!orders.length) {
+        orderHistory.innerHTML = '<h4>Lịch sử đơn hàng</h4><p style="color:#6b7280;">Chưa có đơn hàng.</p>';
+        return;
+      }
+      orderHistory.innerHTML = `<h4>Lịch sử đơn hàng</h4>${orders.map(order => `
+        <div class="order-history-item">Đơn <strong>${order.id}</strong> - ${new Date(order.date).toLocaleString('vi-VN')} - ${formatPrice(order.total)} (${order.items.length} sản phẩm)</div>
+      `).join('')}`;
     }
 
     // Product modal functions
@@ -422,8 +453,11 @@
       }
     }
 
-    // Init cart count
+    // Init cart and order history
     updateCartCount();
+    renderOrderHistory();
+    const orderMessageEl = document.getElementById('orderMessage');
+    if (orderMessageEl) orderMessageEl.style.display = 'none';
   </script>
 </body>
 </html>
