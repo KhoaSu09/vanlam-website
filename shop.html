@@ -112,32 +112,7 @@
     </div>
   </div>
 
-  <!-- Cart Modal -->
-  <div id="cartModal" class="cart-modal">
-    <div class="cart-content">
-      <h3>Giỏ hàng</h3>
-      <div id="cartItems"></div>
-      <div id="cartTotal" class="cart-total">Tổng: 0 VNĐ</div>
 
-      <div id="checkoutSection" style="margin-top:16px;">
-        <button class="checkout-btn" onclick="showCheckoutForm()">Thanh toán</button>
-      </div>
-
-      <div id="orderMessage" class="order-message" style="display:none;"></div>
-      <div id="checkoutForm" style="display:none; margin-top:16px; border-top:1px solid #e5e7eb; padding-top:16px;">
-        <h4>Thông tin thanh toán</h4>
-        <div style="margin-bottom:10px;"><input id="customerName" type="text" placeholder="Họ và tên" style="width:100%;padding:8px;" /></div>
-        <div style="margin-bottom:10px;"><input id="customerPhone" type="tel" placeholder="Số điện thoại" style="width:100%;padding:8px;" /></div>
-        <div style="margin-bottom:10px;"><input id="customerEmail" type="email" placeholder="Email" style="width:100%;padding:8px;" /></div>
-        <div style="margin-bottom:10px;"><textarea id="customerAddress" placeholder="Địa chỉ giao hàng" style="width:100%;padding:8px;height:80px;"></textarea></div>
-        <button class="checkout-btn" onclick="processCheckout()">Xác nhận đặt hàng</button>
-        <button class="close-modal" style="margin-top:8px;" onclick="hideCheckoutForm()">Hủy</button>
-      </div>
-      <div id="orderHistory" class="order-history"></div>
-
-      <button class="close-modal" style="margin-top:12px;" onclick="closeCart()">Đóng</button>
-    </div>
-  </div>
 
   <footer>
     © 2025 Vanlam technologies. All rights reserved.
@@ -279,173 +254,8 @@
       openProductModal(id, name, price, image, description);
     }
 
-    // Cart functions
-    const CART_KEY = 'vl_cart';
+    // Cart states
     let currentProduct = null;
-
-    function getCart() {
-      try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch(e) { return []; }
-    }
-
-    function saveCart(cart) {
-      localStorage.setItem(CART_KEY, JSON.stringify(cart));
-      updateCartCount();
-    }
-
-    function addToCart(id, name, price, image, quantity = 1) {
-      if (!id || !name || isNaN(price) || price < 0 || quantity < 1) {
-        console.warn('Invalid addToCart call', {id,name,price,quantity});
-        alert('Sản phẩm không hợp lệ, vui lòng thử lại.');
-        return;
-      }
-
-      console.log('Adding to cart:', id, name, price, image, quantity);
-      const cart = getCart();
-      const existing = cart.find(item => item.id === id);
-      if (existing) {
-        existing.quantity += quantity;
-      } else {
-        cart.push({ id, name, price, image, quantity });
-      }
-      saveCart(cart);
-      updateCartCount();
-      alert('Đã thêm vào giỏ hàng!');
-    }
-
-    function removeFromCart(id) {
-      const cart = getCart().filter(item => item.id !== id);
-      saveCart(cart);
-      renderCart();
-    }
-
-    function updateCartCount() {
-      const cart = getCart();
-      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-      console.log('Cart count:', count);
-      document.getElementById('cartCount').textContent = count;
-    }
-
-    function renderCart() {
-      const cart = getCart();
-      const cartItems = document.getElementById('cartItems');
-      const cartTotal = document.getElementById('cartTotal');
-
-      if (!cart.length) {
-        cartItems.innerHTML = '<p>Giỏ hàng trống</p>';
-        cartTotal.textContent = 'Tổng: 0 VNĐ';
-        return;
-      }
-
-      cartItems.innerHTML = cart.map(item => `
-        <div class="cart-item">
-          ${item.image ? `<img src="${item.image}" alt="${escapeHtml(item.name)}" />` : '<div style="width:60px; height:60px; background:#e5e7eb; border-radius:6px;"></div>'}
-          <div class="cart-item-details">
-            <h4 class="cart-item-title">${escapeHtml(item.name)}</h4>
-            <div class="cart-item-price">${formatPrice(item.price)} x ${item.quantity}</div>
-            <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
-              <button style="padding:4px 8px; font-size:12px;" onclick="changeCartQuantity('${item.id}', -1)">-</button>
-              <span>${item.quantity}</span>
-              <button style="padding:4px 8px; font-size:12px;" onclick="changeCartQuantity('${item.id}', 1)">+</button>
-            </div>
-          </div>
-          <button class="remove-item" onclick="removeFromCart('${item.id}')">Xóa</button>
-        </div>
-      `).join('');
-
-      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      cartTotal.textContent = `Tổng: ${formatPrice(total)}`;
-    }
-
-    function changeCartQuantity(id, delta) {
-      const cart = getCart();
-      const item = cart.find(i => i.id === id);
-      if (!item) return;
-      item.quantity = Math.max(1, item.quantity + delta);
-      saveCart(cart);
-      renderCart();
-    }
-
-    function openCart() {
-      renderCart();
-      document.getElementById('cartModal').classList.add('active');
-    }
-
-    function closeCart() {
-      document.getElementById('cartModal').classList.remove('active');
-    }
-
-    function showCheckoutForm() {
-      document.getElementById('checkoutSection').style.display = 'none';
-      document.getElementById('checkoutForm').style.display = 'block';
-    }
-
-    function hideCheckoutForm() {
-      document.getElementById('checkoutForm').style.display = 'none';
-      document.getElementById('checkoutSection').style.display = 'block';
-    }
-
-    function processCheckout() {
-      const name = document.getElementById('customerName').value.trim();
-      const phone = document.getElementById('customerPhone').value.trim();
-      const email = document.getElementById('customerEmail').value.trim();
-      const address = document.getElementById('customerAddress').value.trim();
-      const cart = getCart();
-
-      if (!cart.length) {
-        alert('Giỏ hàng đang trống. Vui lòng thêm sản phẩm trước khi thanh toán.');
-        return;
-      }
-      if (!name || !phone || !email || !address) {
-        alert('Vui lòng điền đầy đủ thông tin thanh toán.');
-        return;
-      }
-
-      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      const order = {
-        id: 'order_' + Date.now(),
-        date: new Date().toISOString(),
-        customer: { name, phone, email, address },
-        items: cart,
-        total
-      };
-
-      // tạm lưu đơn hàng vào localStorage order history
-      const ordersKey = 'vl_orders_v1';
-      const orders = JSON.parse(localStorage.getItem(ordersKey) || '[]');
-      orders.push(order);
-      localStorage.setItem(ordersKey, JSON.stringify(orders));
-
-      localStorage.removeItem(CART_KEY);
-      updateCartCount();
-      renderCart();
-      hideCheckoutForm();
-      renderOrderHistory();
-
-      const orderMessageEl = document.getElementById('orderMessage');
-      orderMessageEl.textContent = `Đặt hàng thành công! Mã đơn hàng: ${order.id}. Hệ thống sẽ liên hệ sớm nhất.`;
-      orderMessageEl.style.display = 'block';
-
-      alert(`Đặt hàng thành công! Mã đơn hàng: ${order.id} (Tổng ${formatPrice(total)})`);
-    }
-
-    const ORDERS_KEY = 'vl_orders_v1';
-
-    function loadOrders() {
-      try { return JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]'); }
-      catch (e) { return []; }
-    }
-
-    function renderOrderHistory() {
-      const orderHistory = document.getElementById('orderHistory');
-      const orders = loadOrders().slice(-5).reverse();
-      if (!orders.length) {
-        orderHistory.innerHTML = '<h4>Lịch sử đơn hàng</h4><p style="color:#6b7280;">Chưa có đơn hàng.</p>';
-        return;
-      }
-      orderHistory.innerHTML = `<h4>Lịch sử đơn hàng</h4>${orders.map(order => `
-        <div class="order-history-item">Đơn <strong>${order.id}</strong> - ${new Date(order.date).toLocaleString('vi-VN')} - ${formatPrice(order.total)} (${order.items.length} sản phẩm)</div>
-      `).join('')}`;
-    }
 
     // Product modal functions
     function openProductModal(id, name, price, image, description) {
@@ -470,11 +280,7 @@
       }
     }
 
-    // Init cart and order history
-    updateCartCount();
-    renderOrderHistory();
-    const orderMessageEl = document.getElementById('orderMessage');
-    if (orderMessageEl) orderMessageEl.style.display = 'none';
+
   </script>
   <script src="cart.js"></script>
   <script src="auth.js"></script>
