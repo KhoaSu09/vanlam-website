@@ -89,8 +89,16 @@ function getCart() {
   try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch(e) { return []; }
 }
 function saveCart(cart) {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  updateCartCount();
+  try {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    updateCartCount();
+    return true;
+  } catch(e) {
+    if (e.name === 'QuotaExceededError') {
+      alert('Bộ nhớ đã đầy do có quá nhiều ảnh (QuotaExceededError). Không thể thêm vào giỏ. Vui lòng vào Cửa hàng -> Cài đặt để xóa bớt dữ liệu web!');
+    }
+    return false;
+  }
 }
 
 function addToCart(id, name, price, image, quantity = 1) {
@@ -103,11 +111,14 @@ function addToCart(id, name, price, image, quantity = 1) {
   if (existing) {
     existing.quantity += quantity;
   } else {
-    cart.push({ id, name, price, image, quantity });
+    // Không lưu chuỗi Base64 (ảnh tải lên dài > 1000 ký tự) vào giỏ để tiết kiệm bộ nhớ 5MB
+    const safeImage = (image && image.length > 1000) ? '' : image;
+    cart.push({ id, name, price, image: safeImage, quantity });
   }
-  saveCart(cart);
-  updateCartCount();
-  alert('Đã thêm vào giỏ hàng!');
+  
+  if (saveCart(cart)) {
+    alert('Đã thêm vào giỏ hàng!');
+  }
 }
 
 function removeFromCart(id) {
@@ -135,9 +146,19 @@ function renderCart() {
     return;
   }
 
-  cartItems.innerHTML = cart.map(item => `
+  let products = [];
+  try { products = JSON.parse(localStorage.getItem('vl_products_v1') || '[]'); } catch(e) {}
+
+  cartItems.innerHTML = cart.map(item => {
+    let img = item.image;
+    // Nếu biến image trong giỏ bị rỗng do là chuỗi quá dài, cố gắng lấy lại từ database sản phẩm
+    if (!img) {
+      const p = products.find(p => p.id === item.id);
+      if (p) img = p.image;
+    }
+    return `
     <div class="cart-item">
-      ${item.image ? `<img src="${item.image}" alt="${escapeHtmlGlobal(item.name)}" />` : '<div style="width:60px; height:60px; background:#e5e7eb; border-radius:6px;"></div>'}
+      ${img ? `<img src="${img}" alt="${escapeHtmlGlobal(item.name)}" />` : '<div style="width:60px; height:60px; background:#e5e7eb; border-radius:6px;"></div>'}
       <div class="cart-item-details">
         <h4 class="cart-item-title">${escapeHtmlGlobal(item.name)}</h4>
         <div class="cart-item-price">${formatPriceGlobal(item.price)} x ${item.quantity}</div>
@@ -149,7 +170,8 @@ function renderCart() {
       </div>
       <button class="remove-item" onclick="removeFromCart('${item.id}')">Xóa</button>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   cartTotal.textContent = `Tổng: ${formatPriceGlobal(total)}`;
