@@ -84,7 +84,8 @@
         <a href="contact.html">Liên hệ</a>
         <a href="news.html">Tin tức</a>
         <a href="shop.html" class="active">Sản phẩm</a>
-        <a href="products.html">Quản lý</a>
+        <a href="posts.html" class="admin-only">QL Tin tức</a>
+        <a href="products.html" class="admin-only">QL Sản phẩm</a>
       </nav>
     </header>
 
@@ -475,5 +476,7 @@
     const orderMessageEl = document.getElementById('orderMessage');
     if (orderMessageEl) orderMessageEl.style.display = 'none';
   </script>
+  <script src="cart.js"></script>
+  <script src="auth.js"></script>
 </body>
 </html>

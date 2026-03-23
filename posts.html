@@ -58,20 +58,7 @@
 </head>
 <body>
   <div class="page">
-    <div class="card" id="loginCard">
-      <h1>Đăng nhập Admin</h1>
-      <div id="loginHint" class="hint hidden"></div>
-      <div class="form-group">
-        <label class="form-label" for="passwordInput">Vui lòng nhập mật khẩu</label>
-        <input id="passwordInput" class="form-control" type="password" placeholder="Nhập mật khẩu admin" autocomplete="current-password" />
-      </div>
-      <button id="loginBtn" class="btn btn-primary">Đăng nhập</button>
-      <div class="footer">
-        <a href="index.html">← Quay về trang chủ</a>
-      </div>
-    </div>
-
-    <div class="card hidden" id="managerCard">
+    <div class="card" id="managerCard">
       <div class="manager">
         <div class="toolbar">
           <div>
@@ -118,14 +105,7 @@
 
   <script>
     const POSTS_KEY = 'vl_posts_v1';
-    const ADMIN_PASSWORD = 'admin123'; // Thay đổi mật khẩu ở đây
 
-    const loginCard = document.getElementById('loginCard');
-    const managerCard = document.getElementById('managerCard');
-    const loginHint = document.getElementById('loginHint');
-
-    const passwordInput = document.getElementById('passwordInput');
-    const loginBtn = document.getElementById('loginBtn');
 
     const addPostBtn = document.getElementById('addPostBtn');
     const logoutBtn = document.getElementById('logoutBtn');
@@ -238,33 +218,7 @@
       return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
-    function showManager() {
-      loginCard.classList.add('hidden');
-      managerCard.classList.remove('hidden');
-      renderPosts();
-    }
 
-    function showLogin(message) {
-      managerCard.classList.add('hidden');
-      loginCard.classList.remove('hidden');
-      if (message) {
-        loginHint.textContent = message;
-        loginHint.classList.remove('hidden');
-      } else {
-        loginHint.classList.add('hidden');
-      }
-      passwordInput.value = '';
-      passwordInput.focus();
-    }
-
-    function checkAuth() {
-      return sessionStorage.getItem('vl_admin_authed') === '1';
-    }
-
-    function setAuth(value) {
-      if (value) sessionStorage.setItem('vl_admin_authed', '1');
-      else sessionStorage.removeItem('vl_admin_authed');
-    }
 
     function openModal(post = null) {
       postModal.classList.add('active');
@@ -333,25 +287,8 @@
       renderPosts();
     }
 
-    loginBtn.addEventListener('click', () => {
-      const value = passwordInput.value.trim();
-      if (value === ADMIN_PASSWORD) {
-        setAuth(true);
-        showManager();
-      } else {
-        showLogin('Mật khẩu không đúng, vui lòng thử lại.');
-      }
-    });
-
-    passwordInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') loginBtn.click();
-    });
-
     addPostBtn.addEventListener('click', () => openModal());
-    logoutBtn.addEventListener('click', () => {
-      setAuth(false);
-      showLogin();
-    });
+    logoutBtn.addEventListener('click', () => window.vlAuth.logout());
 
     savePostBtn.addEventListener('click', async () => {
       await savePost();
@@ -362,8 +299,8 @@
     });
 
     // Init
-    if (checkAuth()) showManager();
-    else showLogin();
+    renderPosts();
   </script>
+  <script src="auth.js"></script>
 </body>
 </html>
