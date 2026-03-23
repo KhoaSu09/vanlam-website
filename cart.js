@@ -180,7 +180,10 @@ function hideCheckoutForm() {
   document.getElementById('checkoutSection').style.display = 'block';
 }
 
-function processCheckout() {
+async function processCheckout() {
+  const confirmBtns = document.querySelectorAll('#checkoutForm .checkout-btn');
+  const confirmBtn = confirmBtns.length > 0 ? confirmBtns[0] : null;
+
   const name = document.getElementById('customerName').value.trim();
   const phone = document.getElementById('customerPhone').value.trim();
   const email = document.getElementById('customerEmail').value.trim();
@@ -196,9 +199,40 @@ function processCheckout() {
     return;
   }
 
+  if (confirmBtn) {
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'Đang xử lý...';
+  }
+
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const order = { id: 'ORD_' + Date.now(), date: new Date().toISOString(), customer: { name, phone, email, address }, items: cart, total };
   
+  const currentUser = window.vlAuth ? window.vlAuth.getCurrentUser() : null;
+  const orderPayload = {
+    type: 'order',
+    id: order.id,
+    username: currentUser ? currentUser.username : 'Khách vãng lai',
+    customer: order.customer,
+    items: order.items,
+    total: order.total
+  };
+  
+  try {
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyorLitn0FEonjc4VDkBtyNENWzGK5_chxLCYiqKv299PlTIqnAFYc9ENru9kGvvmh75g/exec';
+    await fetch(scriptURL, { 
+      method: 'POST', 
+      body: JSON.stringify(orderPayload),
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+    });
+  } catch(e) {
+    console.warn('Lỗi đồng bộ Google Sheets:', e);
+  }
+  
+  if (confirmBtn) {
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = 'Xác nhận đặt hàng';
+  }
+
   const orders = loadOrders();
   orders.push(order);
   localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
