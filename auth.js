@@ -208,4 +208,124 @@ document.addEventListener('DOMContentLoaded', () => {
     alert("Bạn cần quyền Quản trị viên để truy cập trang này!");
     window.location.href = 'index.html';
   }
+
+  // 6. Inject Chat Widget
+  const chatStyle = document.createElement('style');
+  chatStyle.textContent = `
+    .vl-chat-widget {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+      font-family: 'Inter', sans-serif;
+    }
+    .vl-chat-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .vl-chat-widget.active .vl-chat-options {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .vl-chat-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      cursor: pointer;
+      border: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .vl-chat-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+    .vl-chat-btn .tooltip {
+      position: absolute;
+      right: 60px;
+      background: #333;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .vl-chat-btn:hover .tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+    .vl-chat-main {
+      width: 60px;
+      height: 60px;
+      background: #0f3c7d;
+      font-size: 28px;
+    }
+    .vl-chat-zalo { background: #0068FF; font-size: 24px; font-weight: bold; font-family: Arial, sans-serif; text-decoration: none; }
+    .vl-chat-fb { background: #0084FF; font-size: 24px; font-weight: bold; font-family: 'Times New Roman', serif; font-style: italic; padding-top: 5px; }
+    .vl-chat-web { background: #0aa3a3; font-size: 20px; }
+    
+    @keyframes vlPulse {
+      0% { box-shadow: 0 0 0 0 rgba(15, 60, 125, 0.5); }
+      70% { box-shadow: 0 0 0 15px rgba(15, 60, 125, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(15, 60, 125, 0); }
+    }
+    .vl-chat-main { animation: vlPulse 2s infinite; }
+    .vl-chat-widget.active .vl-chat-main { animation: none; transform: rotate(45deg); font-size: 32px; font-weight: 300; }
+  `;
+  document.head.appendChild(chatStyle);
+
+  const chatContainer = document.createElement('div');
+  chatContainer.className = 'vl-chat-widget';
+  
+  chatContainer.innerHTML = `
+    <div class="vl-chat-options">
+      <a href="https://zalo.me/0912818815" target="_blank" class="vl-chat-btn vl-chat-zalo" title="Chat Zalo">
+        Z
+        <span class="tooltip">Chat Zalo</span>
+      </a>
+      <a href="https://www.facebook.com/khoaSNA" target="_blank" class="vl-chat-btn vl-chat-fb" title="Chat Facebook">
+        f
+        <span class="tooltip">Chat Facebook</span>
+      </a>
+      <button class="vl-chat-btn vl-chat-web" onclick="alert('Để tích hợp tính năng live-chat trực tiếp, trang web của bạn cần kết nối với nền tảng bên thứ ba (như Tawk.to, Subiz, hoặc Facebook Customer Chat).\\n\\nHình thức hoạt động:\\n1. Bạn tạo tài khoản trên các nền tảng chat đó.\\n2. Lấy đoạn mã JavaScript (embed code) cung cấp.\\n3. Dán đoạn mã đó vào bên trong thẻ <body> của website.')">
+        💬
+        <span class="tooltip">Chat Trực Tiếp</span>
+      </button>
+    </div>
+    <button class="vl-chat-btn vl-chat-main" id="vlChatMainBtn">
+      💬
+    </button>
+  `;
+  
+  document.body.appendChild(chatContainer);
+  
+  const mainChatBtn = document.getElementById('vlChatMainBtn');
+  mainChatBtn.addEventListener('click', () => {
+    chatContainer.classList.toggle('active');
+    if (chatContainer.classList.contains('active')) {
+      mainChatBtn.innerHTML = '+';
+    } else {
+      mainChatBtn.innerHTML = '💬';
+    }
+  });
 });

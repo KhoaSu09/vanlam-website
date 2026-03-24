@@ -265,10 +265,39 @@ async function processCheckout() {
   hideCheckoutForm();
   renderOrderHistory();
 
-  document.getElementById('orderMessage').textContent = `Đặt hàng thành công! Mã đơn: ${order.id}`;
-  document.getElementById('orderMessage').style.display = 'block';
-  alert(`Chúc mừng! Đặt hàng thành công! Mã đơn hàng: ${order.id}`);
+  const orderText = `🛒 ĐƠN HÀNG MỚI\n- Mã đơn: ${order.id}\n- Khách hàng: ${order.customer.name}\n- SĐT: ${order.customer.phone}\n- Email: ${order.customer.email}\n- ĐC: ${order.customer.address}\n\nSản phẩm:\n${order.items.map(i => `+ ${i.name} (x${i.quantity}) - ${formatPriceGlobal(i.price)}`).join('\n')}\n\n================\n💰 Tổng cộng: ${formatPriceGlobal(order.total)}`;
+  const fbLink = 'https://m.me/khoaSNA';
+  const zaloLink = 'https://zalo.me/0912818815';
+  
+  const msgContainer = document.getElementById('orderMessage');
+  msgContainer.dataset.orderText = orderText;
+
+  msgContainer.innerHTML = `
+    <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #065f46;">✅ Đặt hàng thành công! (Mã: ${order.id})</div>
+    <p style="margin: 0 0 12px 0; font-size:14px; color:#374151;">Gửi thông tin đơn hàng này cho shop qua Zalo hoặc Facebook để được xác nhận nhanh nhất:</p>
+    <div style="display:flex; gap:12px; margin-top:8px;">
+      <button onclick="copyToSocial(event, '${zaloLink}')" style="flex:1; background:#0068FF; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">Gửi qua Zalo</button>
+      <button onclick="copyToSocial(event, '${fbLink}')" style="flex:1; background:#0084FF; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">Gửi qua Facebook</button>
+    </div>
+  `;
+  msgContainer.style.display = 'block';
 }
+
+window.copyToSocial = function(e, url) {
+  e.preventDefault();
+  const text = document.getElementById('orderMessage').dataset.orderText || '';
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('✅ Đã copy sẵn nội dung đơn hàng vào bộ nhớ tạm!\n\nWebsite sẽ mở ứng dụng chat. Bạn chỉ cần ấn "Dán" (Paste) để gửi cho shop nhé!');
+      window.open(url, '_blank');
+    }).catch(err => {
+      alert('Đang mở ứng dụng chat. Bạn có thể cần copy lại thông tin bằng tay nếu clipboard gặp lỗi.');
+      window.open(url, '_blank');
+    });
+  } else {
+    window.open(url, '_blank');
+  }
+};
 
 function loadOrders() {
   try { return JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]'); } catch (e) { return []; }
