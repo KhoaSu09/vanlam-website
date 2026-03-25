@@ -4,7 +4,7 @@ const SESSION_KEY = 'vl_current_user_v1';
 
 // Mặc định tạo tài khoản admin và user (chỉ dùng cho static site)
 const defaultUsers = [
-  { username: 'admin', password: '123', role: 'admin' },
+  { username: 'admin', password: 'Abcd@9999', role: 'admin' },
   { username: 'khachhang', password: '123', role: 'user' }
 ];
 
@@ -91,8 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
   authContainer.innerHTML = `
       <div id="authModal" class="auth-modal">
         <div class="auth-content">
-          <h3 id="authTitle" style="margin-top:0; color:#0f3c7d; font-size:22px; text-align:center;">Đăng nhập</h3>
-          <p id="authSubtitle" style="text-align:center; font-size:13px; color:#6b7280; margin-bottom:20px;">(Admin: admin/123 | Mặc định: khachhang/123)</p>
+          <h3 id="authTitle" style="margin-top:0; margin-bottom:20px; color:#0f3c7d; font-size:22px; text-align:center;">Đăng nhập</h3>
           <div id="authError" class="auth-error">Sai tên đăng nhập hoặc mật khẩu!</div>
           <input type="text" id="authUsername" class="auth-input" placeholder="Tên đăng nhập" />
           <input type="password" id="authPassword" class="auth-input" placeholder="Mật khẩu" />
@@ -116,13 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (isRegisterMode) {
       document.getElementById('authTitle').textContent = 'Đăng ký tài khoản';
-      document.getElementById('authSubtitle').style.display = 'none';
       document.getElementById('authLoginBtn').textContent = 'Tạo tài khoản';
       document.getElementById('authToggleText').textContent = 'Đã có tài khoản?';
       document.getElementById('authToggleBtn').textContent = 'Đăng nhập ngay';
     } else {
       document.getElementById('authTitle').textContent = 'Đăng nhập';
-      document.getElementById('authSubtitle').style.display = 'block';
       document.getElementById('authLoginBtn').textContent = 'Đăng nhập ngay';
       document.getElementById('authToggleText').textContent = 'Chưa có tài khoản?';
       document.getElementById('authToggleBtn').textContent = 'Đăng ký ngay';
