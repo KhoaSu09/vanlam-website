@@ -151,7 +151,7 @@
       container.innerHTML = products.map(p => {
         const imageHtml = p.image ? `<img class="product-image" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy" />` : '';
         return `
-        <article class="product-card" data-id="${p.id}" data-name="${encodeURIComponent(p.name)}" data-price="${p.price}" data-image="${encodeURIComponent(p.image || '')}" data-description="${encodeURIComponent(p.description)}">
+        <article class="product-card" onclick="handleViewDetails('${p.id}')">
           ${imageHtml}
           <div class="product-header">
             <h2 class="product-title">${escapeHtml(p.name)}</h2>
@@ -217,42 +217,27 @@
       `).join('');
     }
 
-    renderProducts();
-
-    // Add event listeners for product card click (open detail)
-    document.addEventListener('click', (e) => {
-      const card = e.target.closest('.product-card');
-      if (!card) return;
-
-      const id = card.dataset.id;
-      const name = decodeURIComponent(card.dataset.name);
-      const price = parseFloat(card.dataset.price);
-      const image = decodeURIComponent(card.dataset.image);
-      const description = decodeURIComponent(card.dataset.description || '');
-      openProductModal(id, name, price, image, description);
+    // Use DOMContentLoaded for initial render
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProducts();
     });
 
     function handleAddToCart(productId) {
-      const card = document.querySelector(`.product-card[data-id="${productId}"]`);
-      if (!card) return;
-
-      const id = card.dataset.id;
-      const name = decodeURIComponent(card.dataset.name);
-      const price = parseFloat(card.dataset.price);
-      const image = decodeURIComponent(card.dataset.image);
-      addToCart(id, name, price, image, 1);
+      const products = loadProducts();
+      const p = products.find(item => item.id === productId);
+      if (!p) return;
+      if (typeof addToCart === 'function') {
+        addToCart(p.id, p.name, p.price, p.image, 1);
+      } else {
+        console.error('addToCart function not found. cart.js might not be loaded.');
+      }
     }
 
     function handleViewDetails(productId) {
-      const card = document.querySelector(`.product-card[data-id="${productId}"]`);
-      if (!card) return;
-
-      const id = card.dataset.id;
-      const name = decodeURIComponent(card.dataset.name);
-      const price = parseFloat(card.dataset.price);
-      const image = decodeURIComponent(card.dataset.image);
-      const description = decodeURIComponent(card.dataset.description || '');
-      openProductModal(id, name, price, image, description);
+      const products = loadProducts();
+      const p = products.find(item => item.id === productId);
+      if (!p) return;
+      openProductModal(p.id, p.name, p.price, p.image, p.description);
     }
 
     // Cart states

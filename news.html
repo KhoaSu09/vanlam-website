@@ -101,7 +101,11 @@
       return content.substring(0, length) + (content.length > length ? '...' : '');
     }
 
-    function openModal(post){
+    function openModalById(postId){
+      const posts = loadPosts();
+      const post = posts.find(p => p.id === postId);
+      if(!post) return;
+
       document.getElementById('modalTitle').textContent = escapeHtml(post.title);
       document.getElementById('modalMeta').textContent = new Date(post.date).toLocaleString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
@@ -124,6 +128,7 @@
 
     function renderPosts(){
       const container = document.getElementById('postsList');
+      if(!container) return;
       const posts = loadPosts();
       
       if(!posts.length){
@@ -135,7 +140,7 @@
       container.innerHTML = posts.map(p => {
         const imageHtml = p.image ? `<img class="post-image" src="${p.image}" alt="${escapeHtml(p.title)}" loading="lazy" />` : '';
         return `
-        <article class="post-card" onclick="openModal(${JSON.stringify(p).replace(/"/g, '&quot;')})">
+        <article class="post-card" onclick="openModalById('${p.id}')">
           ${imageHtml}
           <div class="post-header">
             <h2 class="post-title">${escapeHtml(p.title)}</h2>
@@ -199,11 +204,17 @@
       `).join('');
     }
 
-    renderPosts();
+    // Initial flow wrapped in DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', () => {
+      renderPosts();
 
-    // Close modal when clicking outside
-    document.getElementById('postModal').addEventListener('click', (e) => {
-      if(e.target.id === 'postModal') closeModal();
+      // Close modal when clicking outside
+      const postModal = document.getElementById('postModal');
+      if (postModal) {
+        postModal.addEventListener('click', (e) => {
+          if(e.target.id === 'postModal') closeModal();
+        });
+      }
     });
   </script>
 

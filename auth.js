@@ -8,12 +8,56 @@ const defaultUsers = [
   { username: 'khachhang', password: '123', role: 'user' }
 ];
 
-function initUsers() {
+const defaultPosts = [
+  { 
+    id: 'post-1', 
+    title: 'Vanlam Technologies ra mắt giải pháp Chuyển đổi số 2025', 
+    date: new Date().toISOString(), 
+    content: 'Chúng tôi tự hào giới thiệu hệ sinh thái công nghệ mới giúp doanh nghiệp tối ưu hóa quy trình vận hành và nâng cao trải nghiệm khách hàng.',
+    image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1000&auto=format&fit=crop'
+  },
+  { 
+    id: 'post-2', 
+    title: 'Tầm quan trọng của Bảo mật thông tin trong kỷ nguyên AI', 
+    date: new Date(Date.now() - 86400000).toISOString(), 
+    content: 'An ninh mạng đang trở thành ưu tiên hàng đầu. Vanlam cung cấp các giải pháp bảo mật đa lớp ứng dụng trí tuệ nhân tạo.',
+    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop'
+  }
+];
+
+const defaultProducts = [
+  {
+    id: 'prod-1',
+    name: 'Smart Gateway V1',
+    price: 2500000,
+    description: 'Thiết bị kết nối thông minh hỗ trợ đa giao thức Zigbee, Matter và Wi-Fi. Bảo mật chuẩn quân đội.',
+    image: 'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?q=80&w=1000&auto=format&fit=crop',
+    date: new Date().toISOString()
+  },
+  {
+    id: 'prod-2',
+    name: 'Phần mềm Quản lý Kho ERP',
+    price: 0,
+    description: 'Giải pháp quản lý kho chuyên sâu cho doanh nghiệp vừa và nhỏ. Tích hợp AI dự báo tồn kho.',
+    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1000&auto=format&fit=crop',
+    date: new Date().toISOString()
+  }
+];
+
+function initData() {
   if (!localStorage.getItem(USERS_KEY)) {
     localStorage.setItem(USERS_KEY, JSON.stringify(defaultUsers));
   }
+  const existingPosts = JSON.parse(localStorage.getItem('vl_posts_v1') || '[]');
+  if (existingPosts.length === 0) {
+    localStorage.setItem('vl_posts_v1', JSON.stringify(defaultPosts));
+  }
+  const existingProds = JSON.parse(localStorage.getItem('vl_products_v1') || '[]');
+  if (existingProds.length === 0) {
+    localStorage.setItem('vl_products_v1', JSON.stringify(defaultProducts));
+  }
 }
-initUsers();
+initData();
 
 window.vlAuth = {
   getUsers: function () {
@@ -171,38 +215,51 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('is-admin');
   }
 
-  // 4. Tìm các thẻ Nav để gắn nút Đăng nhập / Đăng xuất, tránh gắn vào footer nav (nếu có)
-  const navs = document.querySelectorAll('nav.menu, header nav');
-  navs.forEach(nav => {
-    const authLink = document.createElement('a');
-    authLink.style.marginLeft = '20px';
-    authLink.style.fontWeight = '600';
-    authLink.style.cursor = 'pointer';
+  // 4. Tìm các thẻ Nav để gắn nút Đăng nhập / Đăng xuất
+  function injectAuthLinks() {
+    const navs = document.querySelectorAll('nav, .nav, .menu, header div.links');
+    if (navs.length === 0) return false;
 
-    if (currentUser) {
-      authLink.textContent = `Đăng xuất (${currentUser.username})`;
-      authLink.style.color = '#c92a2a'; // Đỏ nhạt để báo hiệu đăng xuất
-      authLink.onclick = (e) => { e.preventDefault(); window.vlAuth.logout(); };
-    } else {
-      authLink.textContent = 'Đăng nhập';
-      authLink.style.color = '#0f3c7d'; // Xanh primary
-      authLink.onclick = (e) => {
-        e.preventDefault();
-        document.getElementById('authUsername').value = '';
-        document.getElementById('authPassword').value = '';
-        document.getElementById('authError').style.display = 'none';
-        document.getElementById('authModal').classList.add('active');
-      };
-    }
-    nav.appendChild(authLink);
-  });
+    navs.forEach(nav => {
+      // Tránh gắn trùng nếu đã có
+      if (nav.querySelector('.auth-link-injected')) return;
 
+      const authLink = document.createElement('a');
+      authLink.className = 'auth-link-injected';
+      authLink.style.marginLeft = '20px';
+      authLink.style.fontWeight = '600';
+      authLink.style.cursor = 'pointer';
+
+      if (currentUser) {
+        authLink.textContent = `Đăng xuất (${currentUser.username})`;
+        authLink.style.color = '#c92a2a'; 
+        authLink.onclick = (e) => { e.preventDefault(); window.vlAuth.logout(); };
+      } else {
+        authLink.textContent = 'Đăng nhập';
+        authLink.style.color = '#0f3c7d'; 
+        authLink.onclick = (e) => {
+          e.preventDefault();
+          document.getElementById('authUsername').value = '';
+          document.getElementById('authPassword').value = '';
+          document.getElementById('authError').style.display = 'none';
+          document.getElementById('authModal').classList.add('active');
+        };
+      }
+      nav.appendChild(authLink);
+    });
+    return true;
+  }
+
+  if (!injectAuthLinks()) {
+    // Thử lại sau 500ms nếu chưa tìm thấy nav (đề phòng script chạy quá nhanh)
+    setTimeout(injectAuthLinks, 500);
+  }
+
+  // 5. Nếu đang ở các file quản lý nhưng không phải admin -> đá về index.html
   // 5. Nếu đang ở các file quản lý nhưng không phải admin -> đá về index.html
   const isManagePage = window.location.pathname.includes('posts.html') || window.location.pathname.includes('products.html');
   if (isManagePage && (!currentUser || currentUser.role !== 'admin')) {
-    // Thay vì redirect ngay, chỉ che UI gốc đi bằng css
-    // Tuy nhiên cách dễ nhất là:
-    alert("Bạn cần quyền Quản trị viên để truy cập trang này!");
+    alert("Khu vực này dành cho Quản trị viên (Admin). \n\nNếu bạn là khách hàng, vui lòng xem Sản phẩm tại trang 'Cửa hàng' hoặc 'Tin tức'.");
     window.location.href = 'index.html';
   }
 
