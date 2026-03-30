@@ -293,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const chatContainer = document.createElement('div');
   chatContainer.className = 'vl-chat-widget';
-  
+
   chatContainer.innerHTML = `
     <div class="vl-chat-options">
       <a href="https://zalo.me/0912818815" target="_blank" class="vl-chat-btn vl-chat-zalo" title="Chat Zalo">
@@ -313,9 +313,9 @@ document.addEventListener('DOMContentLoaded', () => {
       💬
     </button>
   `;
-  
+
   document.body.appendChild(chatContainer);
-  
+
   const mainChatBtn = document.getElementById('vlChatMainBtn');
   mainChatBtn.addEventListener('click', () => {
     chatContainer.classList.toggle('active');
