@@ -13,8 +13,8 @@
   <style>
     :root { --bg:#f4f6fb; --card:#fff; --text:#111; --muted:#6b7280; --primary:#0f3c7d; --danger:#c92a2a; }
     * { box-sizing:border-box; }
-    body { margin:0; font-family:Inter, system-ui, Arial; background:var(--bg); color:var(--text); }
-    .page { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:32px; }
+    body { margin:0; font-family:Inter, system-ui, Arial; background:var(--bg); color:var(--text); line-height:1.5; }
+    .page { min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:32px 16px; overflow-y:auto; }
 
     .card { width:100%; max-width:520px; background:var(--card); border-radius:18px; padding:32px; box-shadow:0 18px 50px rgba(2,6,23,.08); }
     h1 { margin:0 0 16px; font-size:28px; text-align:center; }
@@ -47,9 +47,9 @@
     .btn-danger { background:var(--danger); color:#fff; }
     .btn-danger:hover { filter:brightness(1.08); }
 
-    .modal { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.45); padding:16px; z-index:100; opacity:0; pointer-events:none; transition:opacity .2s ease; }
+    .modal { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:100; opacity:0; pointer-events:none; transition:opacity .2s ease; overflow-y:auto; padding:20px 16px; }
     .modal.active { opacity:1; pointer-events:auto; }
-    .modal-content { width:100%; max-width:520px; background:var(--card); border-radius:18px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.2); }
+    .modal-content { width:100%; max-width:520px; background:var(--card); border-radius:18px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.2); margin:40px auto; position:relative; }
     .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
     .modal-title { margin:0; font-size:20px; }
     .modal-close { background:none; border:none; font-size:24px; cursor:pointer; color:var(--muted); }
@@ -83,23 +83,24 @@
         <button class="modal-close" aria-label="Đóng" onclick="closeModal()">✕</button>
       </div>
       <div class="form-group">
-        <label class="form-label" for="productName">Tên sản phẩm</label>
-        <input id="productName" class="form-control" type="text" placeholder="Nhập tên sản phẩm" />
+        <label class="form-label" for="productName">Tên sản phẩm *</label>
+        <input id="productName" class="form-control" type="text" placeholder="Nhập tên sản phẩm (tối đa 200 ký tự)" maxlength="200" />
       </div>
       <div class="form-group">
-        <label class="form-label" for="productDescription">Mô tả</label>
-        <textarea id="productDescription" class="form-control" rows="5" placeholder="Nhập mô tả sản phẩm"></textarea>
+        <label class="form-label" for="productDescription">Mô tả chi tiết *</label>
+        <textarea id="productDescription" class="form-control" rows="5" placeholder="Nhập nội dung mô tả sản phẩm" maxlength="5000"></textarea>
       </div>
       <div class="form-group">
-        <label class="form-label" for="productPrice">Giá (VNĐ) - <i>Để trống nếu muốn hiển thị "Liên hệ"</i></label>
-        <input id="productPrice" class="form-control" type="number" placeholder="Nhập giá sản phẩm, để trống = Liên hệ" />
+        <label class="form-label" for="productPrice">Giá bán (VNĐ) - <i>Để trống = "Liên hệ"</i></label>
+        <input id="productPrice" class="form-control" type="number" placeholder="Ví dụ: 1500000" />
       </div>
       <div class="form-group">
-        <label class="form-label" for="productImage">Hình ảnh (tùy chọn)</label>
-        <input id="productImage" class="form-control" type="file" accept="image/*" />
+        <label class="form-label" for="productImage">Hình ảnh sản phẩm (Tối đa 2MB)</label>
+        <input id="productImage" class="form-control" type="file" accept="image/jpeg,image/png,image/webp" />
         <div id="imagePreview" style="margin-top:8px;"></div>
       </div>
-      <button id="saveProductBtn" class="btn btn-primary">Lưu</button>
+      <div id="modalError" class="hint hidden" style="margin-top:0; margin-bottom:16px; text-align:left; font-size:14px; padding:10px; background:#fee2e2; border-radius:8px; border:1px solid #fca5a5;"></div>
+      <button id="saveProductBtn" class="btn btn-primary">Lưu bài viết</button>
     </div>
   </div>
 
@@ -233,6 +234,16 @@
       productModal.classList.remove('active');
     }
 
+    function showError(msg) {
+      const errEl = document.getElementById('modalError');
+      if (msg) {
+        errEl.textContent = msg;
+        errEl.classList.remove('hidden');
+      } else {
+        errEl.classList.add('hidden');
+      }
+    }
+
     async function saveProduct() {
       const name = productName.value.trim();
       const description = productDescription.value.trim();
@@ -240,29 +251,91 @@
       let price = parseFloat(priceStr);
       if (priceStr === '') price = 0;
 
-      if (!name || !description || isNaN(price) || price < 0) {
-        alert('Vui lòng điền đầy đủ tên, mô tả. Giá có thể để trống ("Liên hệ").');
+      showError(null);
+
+      if (!name || !description) {
+        showError('Vui lòng nhập đầy đủ Tên và Mô tả sản phẩm.');
+        return;
+      }
+      if (isNaN(price) || price < 0) {
+        showError('Giá sản phẩm không hợp lệ.');
         return;
       }
 
-      let image = null;
-      if (productImage.files[0]) {
-        image = await readFileAsDataURL(productImage.files[0]);
-      }
+      saveProductBtn.disabled = true;
+      saveProductBtn.textContent = 'Đang lưu bài...';
 
-      const products = loadProducts();
-      if (editingId) {
-        const idx = products.findIndex(p => p.id === editingId);
-        if (idx !== -1) {
-          products[idx] = { ...products[idx], name, description, price, image: image || products[idx].image };
+      try {
+        let image = null;
+        const file = productImage.files[0];
+        
+        if (file) {
+          if (file.size > 2 * 1024 * 1024) {
+            // Nếu file > 2MB, thử nén/resize
+            image = await compressAndResizeImage(file, 1024, 0.7);
+          } else {
+            image = await readFileAsDataURL(file);
+          }
         }
-      } else {
-        products.push({ id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(), name, description, price, date: new Date().toISOString(), image });
-      }
 
-      saveProducts(products);
-      closeModal();
-      renderProducts();
+        const products = loadProducts();
+        if (editingId) {
+          const idx = products.findIndex(p => p.id === editingId);
+          if (idx !== -1) {
+            products[idx] = { ...products[idx], name, description, price, image: image || products[idx].image };
+          }
+        } else {
+          products.push({ 
+            id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(), 
+            name, description, price, 
+            date: new Date().toISOString(), 
+            image 
+          });
+        }
+
+        saveProducts(products);
+        closeModal();
+        renderProducts();
+      } catch (err) {
+        console.error('Save failed:', err);
+        if (err.name === 'QuotaExceededError' || err.message.includes('quota')) {
+          showError('Bộ nhớ trình duyệt đã đầy. Vui lòng xóa bớt sản phẩm cũ hoặc chọn ảnh nhẹ hơn.');
+        } else {
+          showError('Có lỗi xảy ra: ' + err.message);
+        }
+      } finally {
+        saveProductBtn.disabled = false;
+        saveProductBtn.textContent = 'Lưu bài viết';
+      }
+    }
+
+    async function compressAndResizeImage(file, maxWidth, quality) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.onerror = reject;
+        };
+        reader.onerror = reject;
+      });
     }
 
     function readFileAsDataURL(file) {
@@ -291,7 +364,8 @@
     addProductBtn.addEventListener('click', () => openModal());
     logoutBtn.addEventListener('click', () => window.vlAuth.logout());
 
-    saveProductBtn.addEventListener('click', async () => {
+    saveProductBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
       await saveProduct();
     });
 
