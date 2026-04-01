@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tài liệu | Vanlam technologies</title>
+  <meta name="description" content="Xem tài liệu Word .doc và .docx trực tuyến ngay trên trình duyệt với Vanlam technologies." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f3c7d;
+      --secondary: #0aa3a3;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* Header */
+    header {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 0 20px;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .menu a {
+      margin-left: 24px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .menu a:hover, .menu a.active { color: var(--primary); }
+
+    /* Main Content */
+    main {
+      padding: 60px 0;
+      min-height: calc(100vh - 70px - 80px);
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .hero h1 {
+      font-size: 32px;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+    .hero p {
+        color: var(--muted);
+        font-size: 16px;
+    }
+
+    /* Upload Area */
+    .upload-card {
+      background: var(--card);
+      border: 2px dashed var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+    .upload-card:hover, .upload-card.dragover {
+      border-color: var(--primary);
+      background: #f0f7ff;
+    }
+    .upload-card svg {
+      width: 48px;
+      height: 48px;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+    .upload-card h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .upload-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    input[type="file"] {
+      display: none;
+    }
+
+    /* Viewer Area */
+    .viewer-card {
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      padding: 40px;
+      display: none;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .viewer-card.active {
+      display: block;
+    }
+    .viewer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .viewer-title {
+        font-weight: 600;
+        font-size: 18px;
+    }
+    .btn-close {
+        padding: 8px 16px;
+        background: #f1f5f9;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+    }
+    .btn-close:hover {
+        background: #e2e8f0;
+    }
+
+    #documentOutput {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #334155;
+    }
+    #documentOutput h1, #documentOutput h2, #documentOutput h3 {
+      color: var(--primary);
+      margin-top: 1.5em;
+      margin-bottom: 0.5em;
+    }
+    #documentOutput table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5em 0;
+    }
+    #documentOutput th, #documentOutput td {
+      border: 1px solid var(--border);
+      padding: 12px;
+      text-align: left;
+    }
+    #documentOutput th {
+        background: #f8fafc;
+    }
+
+    /* Loading Overlay */
+    .loader {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(255,255,255,0.8);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    .loader.active {
+        display: flex;
+    }
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 10px;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    footer {
+      background: #020617;
+      color: #9ca3af;
+      padding: 30px 0;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+        .upload-card { padding: 30px 20px; }
+        .viewer-card { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Overlay -->
+  <div id="loader" class="loader">
+      <div class="spinner"></div>
+      <p>Đang xử lý tài liệu...</p>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav">
+      <div class="logo">Vanlam technologies</div>
+      <nav class="menu">
+        <a href="index.html">Trang chủ</a>
+        <a href="services.html">Dịch vụ</a>
+        <a href="about.html">Giới thiệu</a>
+        <a href="contact.html">Liên hệ</a>
+        <a href="news.html">Tin tức</a>
+        <a href="shop.html">Sản phẩm</a>
+        <a href="documents.html" class="active">Tài liệu</a>
+        <a href="posts.html" class="admin-only">QL Tin tức</a>
+        <a href="products.html" class="admin-only">QL Sản phẩm</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="hero">
+        <h1>Đọc tài liệu Word trực tuyến</h1>
+        <p>Tải lên tệp .docx để xem nội dung ngay lập tức mà không cần cài đặt phần mềm.</p>
+      </div>
+
+      <!-- Upload Zone -->
+      <div id="dropZone" class="upload-card">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        <h3>Nhấn vào đây hoặc kéo thả tệp tài liệu</h3>
+        <p>Hỗ trợ tệp .docx (Đối với .doc, hãy chuyển đổi sang .docx trước)</p>
+        <input type="file" id="fileInput" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+      </div>
+
+      <!-- Viewer Card -->
+      <div id="viewerCard" class="viewer-card">
+        <div class="viewer-header">
+            <div id="fileName" class="viewer-title">Tên tài liệu</div>
+            <button class="btn-close" onclick="closeViewer()">Đóng</button>
+        </div>
+        <div id="documentOutput"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      © 2025 Vanlam technologies. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Mammoth.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const viewerCard = document.getElementById('viewerCard');
+    const documentOutput = document.getElementById('documentOutput');
+    const fileNameDisplay = document.getElementById('fileName');
+    const loader = document.getElementById('loader');
+
+    // Click to upload
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    // Drag and drop
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length) handleFile(files[0]);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length) handleFile(e.target.files[0]);
+    });
+
+    function handleFile(file) {
+      if (!file) return;
+
+      const extension = file.name.split('.').pop().toLowerCase();
+      
+      if (extension === 'doc') {
+          alert('Định dạng .doc (cũ) không được hỗ trợ trực tiếp. Vui lòng chuyển đổi tệp sang .docx hoặc PDF để xem tốt nhất.');
+          return;
+      }
+
+      if (extension !== 'docx') {
+          alert('Vui lòng chọn tệp Word (.docx).');
+          return;
+      }
+
+      showLoader(true);
+      fileNameDisplay.textContent = file.name;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const arrayBuffer = e.target.result;
+        
+        mammoth.convertToHtml({ arrayBuffer: arrayBuffer })
+          .then(displayResult)
+          .catch(handleError);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function displayResult(result) {
+      documentOutput.innerHTML = result.value;
+      dropZone.style.display = 'none';
+      viewerCard.classList.add('active');
+      showLoader(false);
+      
+      // Scroll to viewer
+      window.scrollTo({ top: viewerCard.offsetTop - 100, behavior: 'smooth' });
+
+      if (result.messages.length) {
+          console.log("Mammoth messages:", result.messages);
+      }
+    }
+
+    function handleError(err) {
+      showLoader(false);
+      console.error(err);
+      alert('Có lỗi xảy ra khi xử lý tài liệu. Vui lòng thử lại với tệp .docx tiêu chuẩn.');
+    }
+
+    function closeViewer() {
+        viewerCard.classList.remove('active');
+        dropZone.style.display = 'block';
+        documentOutput.innerHTML = '';
+        fileInput.value = '';
+    }
+
+    function showLoader(show) {
+        if (show) loader.classList.add('active');
+        else loader.classList.remove('active');
+    }
+  </script>
+</body>
+</html>
