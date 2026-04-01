@@ -147,17 +147,18 @@
       try {
         const res = await fetch(GAS_URL, {
           method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({ type: 'delete_doc', id: id })
         });
         const result = await res.json();
         if (result.success) {
-           showAlert('Đã xóa thành công. Có thể mất 1-2 phút để GitHub cập nhật lại danh sách.', false);
-           setTimeout(renderDocs, 2000); // Đợi 2s rồi tải lại
+           showAlert('Đã xóa thành công. Có thể mất một chút thời gian để GitHub cập nhật lại danh sách.', false);
+           setTimeout(renderDocs, 2000); 
         } else {
            showAlert('Lỗi: ' + result.message);
         }
       } catch (e) {
-        showAlert('Lỗi kết nối Server.');
+        showAlert('Lỗi kết nối Server: ' + e.message);
       }
       showLoading(false);
     }
@@ -182,6 +183,7 @@
           // 2. Gửi tới GAS
           const res = await fetch(GAS_URL, {
             method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({
               type: 'upload_doc',
               file: base64,
