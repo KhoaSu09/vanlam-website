@@ -217,7 +217,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 4. Tìm các thẻ Nav để gắn nút Đăng nhập / Đăng xuất
   function injectAuthLinks() {
-    const navs = document.querySelectorAll('nav, .nav, .menu, header div.links');
+    // Chỉ nhắm vào phần menu chính hoặc nav để tránh bị lặp (do thẻ cha có class 'nav' còn con là 'nav')
+    const navs = document.querySelectorAll('.menu, nav:not(.menu), header div.links');
     if (navs.length === 0) return false;
 
     navs.forEach(nav => {
