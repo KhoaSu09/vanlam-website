@@ -217,14 +217,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 4. Tìm các thẻ Nav để gắn nút Đăng nhập / Đăng xuất
   function injectAuthLinks() {
-    // Chỉ chọn thanh menu chính đầu tiên để chèn nút, tránh bị lặp
-    const nav = document.querySelector('.menu, nav, header .nav');
+    // 1. Kiểm tra biến khóa toàn cục hoặc sự tồn tại của ID để chống lặp tuyệt đối
+    if (window._vl_auth_injected || document.getElementById('vl-auth-link')) return true;
+
+    // 2. Tìm thanh menu phù hợp nhất
+    // Ưu tiên class .menu hoặc thẻ nav để chèn đúng vị trí
+    const nav = document.querySelector('.menu') || document.querySelector('nav') || document.querySelector('.nav');
     if (!nav) return false;
 
-    // Tránh gắn trùng nếu đã có
-    if (nav.querySelector('.auth-link-injected')) return true;
-
     const authLink = document.createElement('a');
+    authLink.id = 'vl-auth-link';
     authLink.className = 'auth-link-injected';
     authLink.style.marginLeft = '20px';
     authLink.style.fontWeight = '600';
@@ -245,7 +247,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('authModal').classList.add('active');
       };
     }
+    
     nav.appendChild(authLink);
+    window._vl_auth_injected = true; // Đánh dấu đã chèn thành công
     return true;
   }
 
