@@ -145,20 +145,17 @@
       
       showLoading(true, 'Đang yêu cầu xóa khỏi GitHub...');
       try {
-        const res = await fetch(GAS_URL, {
+        await fetch(GAS_URL, {
           method: 'POST',
+          mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({ type: 'delete_doc', id: id })
         });
-        const result = await res.json();
-        if (result.success) {
-           showAlert('Đã xóa thành công. Có thể mất một chút thời gian để GitHub cập nhật lại danh sách.', false);
-           setTimeout(renderDocs, 2000); 
-        } else {
-           showAlert('Lỗi: ' + result.message);
-        }
+        // Ở chế độ 'no-cors' không đọc được phản hồi, nên giả định là đã gửi lệnh
+        showAlert('Đã gửi yêu cầu xóa. Đang đợi GitHub cập nhật...', false);
+        setTimeout(renderDocs, 3000); 
       } catch (e) {
-        showAlert('Lỗi kết nối Server: ' + e.message);
+        showAlert('Lỗi kết nối: ' + e.message);
       }
       showLoading(false);
     }
@@ -180,9 +177,10 @@
             date: new Date().toISOString()
           };
 
-          // 2. Gửi tới GAS
-          const res = await fetch(GAS_URL, {
+          // 2. Gửi tới GAS (Sử dụng 'no-cors' để vượt qua lỗi trình duyệt chặn trên tên miền riêng)
+          await fetch(GAS_URL, {
             method: 'POST',
+            mode: 'no-cors',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({
               type: 'upload_doc',
@@ -191,20 +189,7 @@
             })
           });
           
-          let result;
-          const resText = await res.text();
-          try {
-            result = JSON.parse(resText);
-          } catch (e) {
-            console.error('Không thể parse JSON từ GAS:', resText);
-            throw new Error(`Phản hồi từ Server không phải JSON: ${resText.substring(0, 100)}...`);
-          }
-
-          if (result.success) {
-             showAlert(`Đã đăng tải thành công "${file.name}".`, false);
-          } else {
-             showAlert(`Lỗi từ Server: ` + (result.message || result.error || 'Lỗi không xác định'));
-          }
+          showAlert(`Đã gửi file "${file.name}" lên hệ thống. Đang đợi GitHub đồng bộ...`, false);
         } catch (err) {
           console.error('Chi tiết lỗi:', err);
           showAlert(`Lỗi xử lý file "${file.name}": ${err.message}`);
@@ -213,7 +198,7 @@
       
       showLoading(false);
       fileInput.value = '';
-      setTimeout(renderDocs, 3000); 
+      setTimeout(renderDocs, 5000); 
     });
 
     function readFileAsBase64(file) {
