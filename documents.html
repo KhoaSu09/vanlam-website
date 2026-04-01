@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tài liệu | Vanlam technologies</title>
-  <meta name="description" content="Xem tài liệu Word .doc và .docx trực tuyến ngay trên trình duyệt với Vanlam technologies." />
+  <meta name="description" content="Thư viện tài liệu Vanlam technologies. Xem và tải về các tài liệu Word, PDF, Excel, PowerPoint trực tuyến." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -79,7 +79,32 @@
         font-size: 16px;
     }
 
-    /* Upload Area */
+    /* Tabs */
+    .tabs { display:flex; justify-content:center; gap:20px; margin-bottom:30px; border-bottom:1px solid var(--border); }
+    .tab-btn { padding:12px 24px; cursor:pointer; font-weight:600; color:var(--muted); border-bottom:3px solid transparent; transition:0.2s; }
+    .tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); }
+
+    .tab-content { display:none; }
+    .tab-content.active { display:block; }
+
+    /* Library List */
+    .search-box { width:100%; max-width:400px; margin:0 auto 30px; display:block; padding:12px 16px; border:1px solid var(--border); border-radius:10px; font-size:15px; }
+    .lib-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:20px; }
+    .lib-item { background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; display:flex; flex-direction:column; gap:12px; transition:0.2s; }
+    .lib-item:hover { transform:translateY(-3px); box-shadow:0 10px 25px rgba(0,0,0,0.05); }
+    .lib-header { display:flex; gap:12px; align-items:center; }
+    .lib-icon { font-size:28px; }
+    .lib-title { font-weight:600; font-size:16px; color:var(--primary); word-break:break-word; }
+    .lib-meta { font-size:12px; color:var(--muted); }
+    .lib-actions { display:flex; gap:8px; margin-top:auto; }
+
+    .btn { padding:8px 14px; border:none; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:0.2s; flex:1; text-align:center; }
+    .btn-view { background:var(--primary); color:#fff; }
+    .btn-download { background:#f1f5f9; color:var(--text); }
+    .btn-view:hover { opacity:0.9; }
+    .btn-download:hover { background:#e2e8f0; }
+
+    /* Upload Area (Local Viewer) */
     .upload-card {
       background: var(--card);
       border: 2px dashed var(--border);
@@ -89,29 +114,9 @@
       transition: all 0.3s ease;
       cursor: pointer;
       max-width: 600px;
-      margin: 0 auto 40px;
+      margin: 0 auto;
     }
-    .upload-card:hover, .upload-card.dragover {
-      border-color: var(--primary);
-      background: #f0f7ff;
-    }
-    .upload-card svg {
-      width: 48px;
-      height: 48px;
-      color: var(--primary);
-      margin-bottom: 16px;
-    }
-    .upload-card h3 {
-      font-size: 18px;
-      margin-bottom: 8px;
-    }
-    .upload-card p {
-      color: var(--muted);
-      font-size: 14px;
-    }
-    input[type="file"] {
-      display: none;
-    }
+    .upload-card svg { width: 48px; height: 48px; color: var(--primary); margin-bottom: 16px; }
 
     /* Viewer Area */
     .viewer-card {
@@ -120,111 +125,35 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.05);
       padding: 40px;
       display: none;
-      max-width: 900px;
-      margin: 0 auto;
+      max-width: 1000px;
+      margin: 30px auto;
     }
-    .viewer-card.active {
-      display: block;
-    }
-    .viewer-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
-    }
-    .viewer-title {
-        font-weight: 600;
-        font-size: 18px;
-    }
-    .btn-close {
-        padding: 8px 16px;
-        background: #f1f5f9;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 500;
-    }
-    .btn-close:hover {
-        background: #e2e8f0;
-    }
+    .viewer-card.active { display: block; }
+    .viewer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .btn-close { padding: 8px 16px; background: #f1f5f9; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; }
 
-    #documentOutput {
-      font-size: 16px;
-      line-height: 1.8;
-      color: #334155;
-    }
-    #documentOutput h1, #documentOutput h2, #documentOutput h3 {
-      color: var(--primary);
-      margin-top: 1.5em;
-      margin-bottom: 0.5em;
-    }
-    #documentOutput table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.5em 0;
-    }
-    #documentOutput th, #documentOutput td {
-      border: 1px solid var(--border);
-      padding: 12px;
-      text-align: left;
-    }
-    #documentOutput th {
-        background: #f8fafc;
-    }
+    #documentOutput { font-size: 16px; line-height: 1.8; color: #334155; overflow-x:auto; }
+    #documentOutput h1, #documentOutput h2, #documentOutput h3 { color: var(--primary); margin: 1.5em 0 0.5em; }
+    #documentOutput table { width: 100%; border-collapse: collapse; margin: 1.5em 0; background:#fff; }
+    #documentOutput th, #documentOutput td { border: 1px solid var(--border); padding: 12px; text-align: left; }
+    #documentOutput th { background: #f8fafc; }
 
-    /* Loading Overlay */
-    .loader {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(255,255,255,0.8);
-        z-index: 1000;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-    }
-    .loader.active {
-        display: flex;
-    }
-    .spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid var(--primary);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin-bottom: 10px;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
+    /* Loader */
+    .loader { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.8); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; }
+    .loader.active { display: flex; }
+    .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    footer {
-      background: #020617;
-      color: #9ca3af;
-      padding: 30px 0;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
-        .upload-card { padding: 30px 20px; }
-        .viewer-card { padding: 20px; }
-    }
+    footer { background: #020617; color: #9ca3af; padding: 30px 0; text-align: center; font-size: 14px; }
   </style>
 </head>
 <body>
 
-  <!-- Loading Overlay -->
   <div id="loader" class="loader">
       <div class="spinner"></div>
       <p>Đang xử lý tài liệu...</p>
   </div>
 
-  <!-- Header -->
   <header>
     <div class="container nav">
       <div class="logo">Vanlam technologies</div>
@@ -238,6 +167,7 @@
         <a href="documents.html" class="active">Tài liệu</a>
         <a href="posts.html" class="admin-only">QL Tin tức</a>
         <a href="products.html" class="admin-only">QL Sản phẩm</a>
+        <a href="manage-documents.html" class="admin-only">QL Tài liệu</a>
       </nav>
     </div>
   </header>
@@ -245,24 +175,39 @@
   <main>
     <div class="container">
       <div class="hero">
-        <h1>Đọc tài liệu Word trực tuyến</h1>
-        <p>Tải lên tệp .docx để xem nội dung ngay lập tức mà không cần cài đặt phần mềm.</p>
+        <h1>Thư viện Tài liệu</h1>
+        <p>Xem trực tuyến hoặc tải về các tài liệu hướng dẫn, báo cáo và biểu mẫu.</p>
       </div>
 
-      <!-- Upload Zone -->
-      <div id="dropZone" class="upload-card">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-        </svg>
-        <h3>Nhấn vào đây hoặc kéo thả tệp tài liệu</h3>
-        <p>Hỗ trợ tệp .docx (Đối với .doc, hãy chuyển đổi sang .docx trước)</p>
-        <input type="file" id="fileInput" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+      <div class="tabs">
+        <div class="tab-btn active" onclick="switchTab('library')">Thư viện chia sẻ</div>
+        <div class="tab-btn" onclick="switchTab('local')">Công cụ đọc file</div>
       </div>
 
-      <!-- Viewer Card -->
+      <!-- Tab: Library -->
+      <div id="tabLibrary" class="tab-content active">
+        <input type="text" id="libSearch" class="search-box" placeholder="Tìm kiếm tài liệu..." oninput="filterLibrary()">
+        <div id="libList" class="lib-grid">
+            <p style="text-align:center; grid-column:1/-1; padding:40px; color:var(--muted);">Đang tải tài liệu...</p>
+        </div>
+      </div>
+
+      <!-- Tab: Local Viewer -->
+      <div id="tabLocal" class="tab-content">
+        <div id="dropZone" class="upload-card" onclick="document.getElementById('fileInput').click()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+          <h3>Công cụ xem nhanh</h3>
+          <p>Kéo thả file .docx, .pdf hoặc .xlsx vào đây để xem tạm thời.</p>
+          <input type="file" id="fileInput" style="display:none" accept=".docx,.pdf,.xlsx,.xls" />
+        </div>
+      </div>
+
+      <!-- Shared Viewer Area -->
       <div id="viewerCard" class="viewer-card">
         <div class="viewer-header">
-            <div id="fileName" class="viewer-title">Tên tài liệu</div>
+            <div id="viewTitle" class="viewer-title">Tên tài liệu</div>
             <button class="btn-close" onclick="closeViewer()">Đóng</button>
         </div>
         <div id="documentOutput"></div>
@@ -270,108 +215,154 @@
     </div>
   </main>
 
-  <!-- Footer -->
   <footer>
-    <div class="container">
-      © 2025 Vanlam technologies. All rights reserved.
-    </div>
+    <div class="container">© 2025 Vanlam technologies. All rights reserved.</div>
   </footer>
 
-  <!-- Mammoth.js Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   
   <script>
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    const viewerCard = document.getElementById('viewerCard');
-    const documentOutput = document.getElementById('documentOutput');
-    const fileNameDisplay = document.getElementById('fileName');
-    const loader = document.getElementById('loader');
+    const DOCS_KEY = 'vl_shared_documents_v1';
+    let sharedDocs = [];
 
-    // Click to upload
-    dropZone.addEventListener('click', () => fileInput.click());
-
-    // Drag and drop
-    dropZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropZone.classList.add('dragover');
-    });
-
-    dropZone.addEventListener('dragleave', () => {
-      dropZone.classList.remove('dragover');
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.classList.remove('dragover');
-      const files = e.dataTransfer.files;
-      if (files.length) handleFile(files[0]);
-    });
-
-    fileInput.addEventListener('change', (e) => {
-      if (e.target.files.length) handleFile(e.target.files[0]);
-    });
-
-    function handleFile(file) {
-      if (!file) return;
-
-      const extension = file.name.split('.').pop().toLowerCase();
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
       
-      if (extension === 'doc') {
-          alert('Định dạng .doc (cũ) không được hỗ trợ trực tiếp. Vui lòng chuyển đổi tệp sang .docx hoặc PDF để xem tốt nhất.');
-          return;
+      if(tab === 'library') {
+        document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+        document.getElementById('tabLibrary').classList.add('active');
+      } else {
+        document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+        document.getElementById('tabLocal').classList.add('active');
+      }
+      closeViewer();
+    }
+
+    // --- Library Logic ---
+    function loadLibrary() {
+      try { sharedDocs = JSON.parse(localStorage.getItem(DOCS_KEY) || '[]'); }
+      catch (e) { sharedDocs = []; }
+      renderLibrary(sharedDocs);
+    }
+
+    function getIcon(ext) {
+      if(ext === 'pdf') return '📕';
+      if(ext === 'docx' || ext === 'doc') return '📘';
+      if(ext.includes('xl')) return '📗';
+      if(ext.includes('pp')) return '📙';
+      return '📄';
+    }
+
+    function renderLibrary(docs) {
+      const list = document.getElementById('libList');
+      if (!docs.length) {
+        list.innerHTML = '<p style="text-align:center; grid-column:1/-1; padding:40px; color:var(--muted);">Chưa có tài liệu nào được chia sẻ.</p>';
+        return;
       }
 
-      if (extension !== 'docx') {
-          alert('Vui lòng chọn tệp Word (.docx).');
-          return;
-      }
+      list.innerHTML = docs.map(doc => `
+        <div class="lib-item">
+          <div class="lib-header">
+            <span class="lib-icon">${getIcon(doc.ext)}</span>
+            <div>
+              <div class="lib-title">${doc.name}</div>
+              <div class="lib-meta">${(doc.size / 1024).toFixed(1)} KB • ${new Date(doc.date).toLocaleDateString('vi-VN')}</div>
+            </div>
+          </div>
+          <div class="lib-actions">
+            ${['pdf','docx','xlsx','xls'].includes(doc.ext) ? `<button class="btn btn-view" onclick="viewSharedDoc('${doc.id}')">Xem</button>` : ''}
+            <button class="btn btn-download" onclick="downloadDoc('${doc.id}')">Tải về</button>
+          </div>
+        </div>
+      `).join('');
+    }
 
-      showLoader(true);
-      fileNameDisplay.textContent = file.name;
+    function filterLibrary() {
+      const q = document.getElementById('libSearch').value.toLowerCase();
+      const filtered = sharedDocs.filter(d => d.name.toLowerCase().includes(q));
+      renderLibrary(filtered);
+    }
 
+    // --- Viewer Logic ---
+    function viewSharedDoc(id) {
+      const doc = sharedDocs.find(d => d.id === id);
+      if(!doc) return;
+      processData(doc.data, doc.name, doc.ext);
+    }
+
+    // Local Tool
+    document.getElementById('fileInput').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if(!file) return;
       const reader = new FileReader();
-      reader.onload = function(e) {
-        const arrayBuffer = e.target.result;
-        
-        mammoth.convertToHtml({ arrayBuffer: arrayBuffer })
-          .then(displayResult)
-          .catch(handleError);
-      };
-      reader.readAsArrayBuffer(file);
-    }
+      reader.onload = (ev) => processData(ev.target.result, file.name, file.name.split('.').pop().toLowerCase());
+      reader.readAsDataURL(file);
+    });
 
-    function displayResult(result) {
-      documentOutput.innerHTML = result.value;
-      dropZone.style.display = 'none';
-      viewerCard.classList.add('active');
-      showLoader(false);
-      
-      // Scroll to viewer
-      window.scrollTo({ top: viewerCard.offsetTop - 100, behavior: 'smooth' });
+    function processData(dataUrl, name, ext) {
+      showLoader(true);
+      document.getElementById('viewTitle').textContent = name;
+      const base64Data = dataUrl.split(',')[1];
+      const binary = atob(base64Data);
+      const array = new Uint8Array(binary.length);
+      for(let i=0; i<binary.length; i++) array[i] = binary.charCodeAt(i);
 
-      if (result.messages.length) {
-          console.log("Mammoth messages:", result.messages);
+      const buffer = array.buffer;
+
+      if (ext === 'pdf') {
+        const blob = new Blob([buffer], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        document.getElementById('documentOutput').innerHTML = `<iframe src="${url}" width="100%" height="600px" style="border:none;"></iframe>`;
+        finishView();
+      } else if (ext === 'docx') {
+        mammoth.convertToHtml({ arrayBuffer: buffer })
+          .then(res => { document.getElementById('documentOutput').innerHTML = res.value; finishView(); })
+          .catch(err => { alert('Không thể đọc file Word này.'); showLoader(false); });
+      } else if (ext === 'xlsx' || ext === 'xls') {
+        try {
+          const workbook = XLSX.read(buffer, { type: 'array' });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const html = XLSX.utils.sheet_to_html(firstSheet);
+          document.getElementById('documentOutput').innerHTML = html;
+          finishView();
+        } catch(e) { alert('Không thể đọc file Excel này.'); showLoader(false); }
+      } else {
+        alert('Định dạng này chỉ hỗ trợ tải về.');
+        showLoader(false);
       }
     }
 
-    function handleError(err) {
+    function finishView() {
+      document.getElementById('viewerCard').classList.add('active');
+      document.getElementById('tabLibrary').classList.remove('active');
+      document.getElementById('tabLocal').classList.remove('active');
       showLoader(false);
-      console.error(err);
-      alert('Có lỗi xảy ra khi xử lý tài liệu. Vui lòng thử lại với tệp .docx tiêu chuẩn.');
+      window.scrollTo({ top: document.getElementById('viewerCard').offsetTop - 80, behavior: 'smooth' });
+    }
+
+    function downloadDoc(id) {
+      const doc = sharedDocs.find(d => d.id === id);
+      if(!doc) return;
+      const link = document.createElement('a');
+      link.href = doc.data;
+      link.download = doc.name;
+      link.click();
     }
 
     function closeViewer() {
-        viewerCard.classList.remove('active');
-        dropZone.style.display = 'block';
-        documentOutput.innerHTML = '';
-        fileInput.value = '';
+      document.getElementById('viewerCard').classList.remove('active');
+      const activeTab = document.querySelector('.tab-btn.active').textContent.includes('Thư viện') ? 'tabLibrary' : 'tabLocal';
+      document.getElementById(activeTab).classList.add('active');
+      document.getElementById('documentOutput').innerHTML = '';
     }
 
-    function showLoader(show) {
-        if (show) loader.classList.add('active');
-        else loader.classList.remove('active');
+    function showLoader(s) { 
+        document.getElementById('loader').classList.toggle('active', s); 
     }
+
+    document.addEventListener('DOMContentLoaded', loadLibrary);
   </script>
 </body>
 </html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quản lý tài liệu | Vanlam technologies</title>
+  <style>
+    :root { --bg:#f4f6fb; --card:#fff; --text:#111; --muted:#6b7280; --primary:#0f3c7d; --danger:#c92a2a; --success:#059669; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, sans-serif; background:var(--bg); color:var(--text); line-height:1.5; }
+    .page { min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:32px 16px; }
+
+    .card { width:100%; max-width:800px; background:var(--card); border-radius:18px; padding:32px; box-shadow:0 18px 50px rgba(2,6,23,.08); }
+    h1 { margin:0 0 16px; font-size:26px; }
+    .toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; gap:16px; flex-wrap:wrap; }
+
+    .upload-section { background:#f8fafc; border:2px dashed #cbd5e1; border-radius:12px; padding:24px; text-align:center; margin-bottom:32px; cursor:pointer; }
+    .upload-section:hover { border-color:var(--primary); background:#f0f7ff; }
+    .hidden-input { display:none; }
+
+    .btn { padding:10px 18px; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
+    .btn-primary { background:var(--primary); color:#fff; }
+    .btn-danger { background:var(--danger); color:#fff; }
+    .btn-secondary { background:#e5e7eb; color:#111; }
+
+    .doc-list { border-top:1px solid #e5e7eb; padding-top:20px; }
+    .doc-item { display:flex; justify-content:space-between; align-items:center; padding:16px; border:1px solid #e5e7eb; border-radius:10px; margin-bottom:12px; background:#fff; }
+    .doc-info { display:flex; align-items:center; gap:12px; }
+    .doc-icon { font-size:24px; width:40px; text-align:center; }
+    .doc-meta { font-size:12px; color:var(--muted); margin-top:2px; }
+
+    .alert { padding:12px; border-radius:8px; margin-bottom:16px; font-size:14px; display:none; }
+    .alert-error { background:#fee2e2; border:1px solid #fca5a5; color:#b91c1c; display:block; }
+    .alert-success { background:#ecfdf5; border:1px solid #6ee7b7; color:#065f46; display:block; }
+
+    /* Tags for file types */
+    .tag { font-size:11px; padding:2px 6px; border-radius:4px; font-weight:700; text-transform:uppercase; }
+    .tag-pdf { background:#fee2e2; color:#b91c1c; }
+    .tag-word { background:#e0f2fe; color:#0369a1; }
+    .tag-excel { background:#dcfce7; color:#15803d; }
+    .tag-ppt { background:#ffedd5; color:#c2410c; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+      <div class="toolbar">
+        <div>
+          <h1>Quản lý Thư viện tài liệu</h1>
+          <p style="color:var(--muted); font-size:14px; margin:0;">Đăng tải tài liệu cho khách hàng tải về hoặc xem trực tuyến.</p>
+        </div>
+        <a href="index.html" class="btn btn-secondary">Quay lại</a>
+      </div>
+
+      <div id="statusAlert" class="alert"></div>
+
+      <div class="upload-section" onclick="document.getElementById('fileInput').click()">
+        <div style="font-size:40px; margin-bottom:8px;">📦</div>
+        <h3 style="margin:0 0 4px;">Nhấn để đăng tài liệu mới</h3>
+        <p style="color:var(--muted); font-size:13px; margin:0;">Hỗ trợ: PDF, Word, Excel, PowerPoint (Tối đa 2MB)</p>
+        <input type="file" id="fileInput" class="hidden-input" multiple 
+               accept=".doc,.docx,.pdf,.xls,.xlsx,.ppt,.pptx" />
+      </div>
+
+      <div class="doc-list" id="docList">
+        <p style="text-align:center; color:var(--muted); padding:20px;">Đang tải danh sách tài liệu...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    const DOCS_KEY = 'vl_shared_documents_v1';
+    const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+
+    const fileInput = document.getElementById('fileInput');
+    const docList = document.getElementById('docList');
+    const statusAlert = document.getElementById('statusAlert');
+
+    function showAlert(msg, isError = true) {
+      statusAlert.textContent = msg;
+      statusAlert.className = 'alert ' + (isError ? 'alert-error' : 'alert-success');
+      setTimeout(() => { statusAlert.style.display = 'none'; }, 5000);
+    }
+
+    function loadDocs() {
+      try { return JSON.parse(localStorage.getItem(DOCS_KEY) || '[]'); }
+      catch (e) { return []; }
+    }
+
+    function saveDocs(docs) {
+      try {
+        localStorage.setItem(DOCS_KEY, JSON.stringify(docs));
+        return true;
+      } catch (e) {
+        showAlert('Dung lượng trình duyệt đầy! Không thể lưu thêm tài liệu. Vui lòng xóa bài cũ.');
+        return false;
+      }
+    }
+
+    function getFileIcon(ext) {
+      if (['pdf'].includes(ext)) return '📕';
+      if (['doc', 'docx'].includes(ext)) return '📘';
+      if (['xls', 'xlsx'].includes(ext)) return '📗';
+      if (['ppt', 'pptx'].includes(ext)) return '📙';
+      return '📄';
+    }
+
+    function getTagClass(ext) {
+      if (['pdf'].includes(ext)) return 'tag-pdf';
+      if (['doc', 'docx'].includes(ext)) return 'tag-word';
+      if (['xls', 'xlsx'].includes(ext)) return 'tag-excel';
+      if (['ppt', 'pptx'].includes(ext)) return 'tag-ppt';
+      return '';
+    }
+
+    function renderDocs() {
+      const docs = loadDocs().sort((a,b) => new Date(b.date) - new Date(a.date));
+      if (!docs.length) {
+        docList.innerHTML = '<p style="text-align:center; color:var(--muted); padding:40px; border:1px dashed #cbd5e1; border-radius:12px;">Chưa có tài liệu nào được đăng.</p>';
+        return;
+      }
+
+      docList.innerHTML = docs.map(doc => `
+        <div class="doc-item">
+          <div class="doc-info">
+            <div class="doc-icon">${getFileIcon(doc.ext)}</div>
+            <div>
+              <div style="font-weight:600;">${doc.name} <span class="tag ${getTagClass(doc.ext)}">${doc.ext}</span></div>
+              <div class="doc-meta">
+                ${(doc.size / 1024).toFixed(1)} KB • ${new Date(doc.date).toLocaleDateString('vi-VN')}
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-danger" onclick="deleteDoc('${doc.id}')">Xóa</button>
+        </div>
+      `).join('');
+    }
+
+    function deleteDoc(id) {
+      if (!confirm('Bạn có chắc chắn muốn xóa tài liệu này không?')) return;
+      const docs = loadDocs().filter(d => d.id !== id);
+      saveDocs(docs);
+      renderDocs();
+      showAlert('Đã xóa tài liệu thành công.', false);
+    }
+
+    fileInput.addEventListener('change', async (e) => {
+      const files = Array.from(e.target.files);
+      if (!files.length) return;
+
+      const docs = loadDocs();
+      let added = 0;
+
+      for (const file of files) {
+        if (file.size > MAX_SIZE) {
+          showAlert(`File "${file.name}" vượt quá 2MB. Vui lòng nén file hoặc dùng link Drive.`);
+          continue;
+        }
+
+        try {
+          const data = await readFileAsBase64(file);
+          const ext = file.name.split('.').pop().toLowerCase();
+          
+          docs.push({
+            id: 'doc-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+            name: file.name,
+            ext: ext,
+            size: file.size,
+            date: new Date().toISOString(),
+            data: data
+          });
+          added++;
+        } catch (err) {
+          showAlert(`Lỗi khi đọc file "${file.name}"`);
+        }
+      }
+
+      if (added > 0) {
+        if (saveDocs(docs)) {
+            showAlert(`Đã lưu thành công ${added} tài liệu.`, false);
+            renderDocs();
+        }
+      }
+      fileInput.value = '';
+    });
+
+    function readFileAsBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+        renderDocs();
+    });
+  </script>
+</body>
+</html>

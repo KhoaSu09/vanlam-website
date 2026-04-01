@@ -257,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 5. Nếu đang ở các file quản lý nhưng không phải admin -> đá về index.html
   // 5. Nếu đang ở các file quản lý nhưng không phải admin -> đá về index.html
-  const isManagePage = window.location.pathname.includes('posts.html') || window.location.pathname.includes('products.html');
+  const isManagePage = window.location.pathname.includes('posts.html') || window.location.pathname.includes('products.html') || window.location.pathname.includes('manage-documents.html');
   if (isManagePage && (!currentUser || currentUser.role !== 'admin')) {
     alert("Khu vực này dành cho Quản trị viên (Admin). \n\nNếu bạn là khách hàng, vui lòng xem Sản phẩm tại trang 'Cửa hàng' hoặc 'Tin tức'.");
     window.location.href = 'index.html';
