@@ -169,6 +169,7 @@
       for (const file of files) {
         showLoading(true, `Đang đẩy file "${file.name}" lên GitHub...`);
         try {
+          // 1. Đọc file
           const base64 = await readFileAsBase64(file);
           const metadata = {
             id: 'doc-' + Date.now(),
@@ -178,6 +179,7 @@
             date: new Date().toISOString()
           };
 
+          // 2. Gửi tới GAS
           const res = await fetch(GAS_URL, {
             method: 'POST',
             body: JSON.stringify({
@@ -187,20 +189,25 @@
             })
           });
           
+          if (!res.ok) {
+            throw new Error(`Server trả về lỗi ${res.status}: ${res.statusText}`);
+          }
+
           const result = await res.json();
           if (result.success) {
              showAlert(`Đã đăng tải thành công "${file.name}".`, false);
           } else {
-             showAlert(`Lỗi upload "${file.name}": ` + result.message);
+             showAlert(`Lỗi upload "${file.name}": ` + (result.message || result.error || 'Không xác định'));
           }
         } catch (err) {
-          showAlert(`Lỗi xử lý file "${file.name}"`);
+          console.error('Lỗi upload:', err);
+          showAlert(`Lỗi xử lý file "${file.name}": ${err.message}`);
         }
       }
       
       showLoading(false);
       fileInput.value = '';
-      setTimeout(renderDocs, 3000); // Đợi GitHub Sync xong rồi load lại
+      setTimeout(renderDocs, 3000); 
     });
 
     function readFileAsBase64(file) {
