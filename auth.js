@@ -217,37 +217,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 4. Tìm các thẻ Nav để gắn nút Đăng nhập / Đăng xuất
   function injectAuthLinks() {
-    // Chỉ nhắm vào phần menu chính hoặc nav để tránh bị lặp (do thẻ cha có class 'nav' còn con là 'nav')
-    const navs = document.querySelectorAll('.menu, nav:not(.menu), header div.links');
-    if (navs.length === 0) return false;
+    // Chỉ chọn thanh menu chính đầu tiên để chèn nút, tránh bị lặp
+    const nav = document.querySelector('.menu, nav, header .nav');
+    if (!nav) return false;
 
-    navs.forEach(nav => {
-      // Tránh gắn trùng nếu đã có
-      if (nav.querySelector('.auth-link-injected')) return;
+    // Tránh gắn trùng nếu đã có
+    if (nav.querySelector('.auth-link-injected')) return true;
 
-      const authLink = document.createElement('a');
-      authLink.className = 'auth-link-injected';
-      authLink.style.marginLeft = '20px';
-      authLink.style.fontWeight = '600';
-      authLink.style.cursor = 'pointer';
+    const authLink = document.createElement('a');
+    authLink.className = 'auth-link-injected';
+    authLink.style.marginLeft = '20px';
+    authLink.style.fontWeight = '600';
+    authLink.style.cursor = 'pointer';
 
-      if (currentUser) {
-        authLink.textContent = `Đăng xuất (${currentUser.username})`;
-        authLink.style.color = '#c92a2a'; 
-        authLink.onclick = (e) => { e.preventDefault(); window.vlAuth.logout(); };
-      } else {
-        authLink.textContent = 'Đăng nhập';
-        authLink.style.color = '#0f3c7d'; 
-        authLink.onclick = (e) => {
-          e.preventDefault();
-          document.getElementById('authUsername').value = '';
-          document.getElementById('authPassword').value = '';
-          document.getElementById('authError').style.display = 'none';
-          document.getElementById('authModal').classList.add('active');
-        };
-      }
-      nav.appendChild(authLink);
-    });
+    if (currentUser) {
+      authLink.textContent = `Đăng xuất (${currentUser.username})`;
+      authLink.style.color = '#c92a2a'; 
+      authLink.onclick = (e) => { e.preventDefault(); window.vlAuth.logout(); };
+    } else {
+      authLink.textContent = 'Đăng nhập';
+      authLink.style.color = '#0f3c7d'; 
+      authLink.onclick = (e) => {
+        e.preventDefault();
+        document.getElementById('authUsername').value = '';
+        document.getElementById('authPassword').value = '';
+        document.getElementById('authError').style.display = 'none';
+        document.getElementById('authModal').classList.add('active');
+      };
+    }
+    nav.appendChild(authLink);
     return true;
   }
 
