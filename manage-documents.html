@@ -1,53 +1,208 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Quản lý tài liệu | Vanlam technologies</title>
   <style>
-    :root { --bg:#f4f6fb; --card:#fff; --text:#111; --muted:#6b7280; --primary:#0f3c7d; --danger:#c92a2a; --success:#059669; }
-    * { box-sizing:border-box; }
-    body { margin:0; font-family:Inter, sans-serif; background:var(--bg); color:var(--text); line-height:1.5; }
-    .page { min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:32px 16px; }
+    :root {
+      --bg: #f4f6fb;
+      --card: #fff;
+      --text: #111;
+      --muted: #6b7280;
+      --primary: #0f3c7d;
+      --danger: #c92a2a;
+      --success: #059669;
+    }
 
-    .card { width:100%; max-width:800px; background:var(--card); border-radius:18px; padding:32px; box-shadow:0 18px 50px rgba(2,6,23,.08); }
-    h1 { margin:0 0 16px; font-size:26px; }
-    .toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; gap:16px; flex-wrap:wrap; }
+    * {
+      box-sizing: border-box;
+    }
 
-    .upload-section { background:#f8fafc; border:2px dashed #cbd5e1; border-radius:12px; padding:24px; text-align:center; margin-bottom:32px; cursor:pointer; }
-    .upload-section:hover { border-color:var(--primary); background:#f0f7ff; }
-    .upload-section.loading { opacity:0.6; pointer-events:none; }
-    .hidden-input { display:none; }
+    body {
+      margin: 0;
+      font-family: Inter, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
 
-    .btn { padding:10px 18px; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
-    .btn-primary { background:var(--primary); color:#fff; }
-    .btn-danger { background:var(--danger); color:#fff; }
-    .btn-secondary { background:#e5e7eb; color:#111; }
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px;
+    }
 
-    .doc-list { border-top:1px solid #e5e7eb; padding-top:20px; }
-    .doc-item { display:flex; justify-content:space-between; align-items:center; padding:16px; border:1px solid #e5e7eb; border-radius:10px; margin-bottom:12px; background:#fff; }
-    .doc-info { display:flex; align-items:center; gap:12px; }
-    .doc-icon { font-size:24px; width:40px; text-align:center; }
-    .doc-meta { font-size:12px; color:var(--muted); margin-top:2px; }
+    .card {
+      width: 100%;
+      max-width: 800px;
+      background: var(--card);
+      border-radius: 18px;
+      padding: 32px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, .08);
+    }
 
-    .alert { padding:12px; border-radius:8px; margin-bottom:16px; font-size:14px; display:none; }
-    .alert-error { background:#fee2e2; border:1px solid #fca5a5; color:#b91c1c; display:block; }
-    .alert-success { background:#ecfdf5; border:1px solid #6ee7b7; color:#065f46; display:block; }
+    h1 {
+      margin: 0 0 16px;
+      font-size: 26px;
+    }
 
-    .tag { font-size:11px; padding:2px 6px; border-radius:4px; font-weight:700; text-transform:uppercase; }
-    .tag-pdf { background:#fee2e2; color:#b91c1c; }
-    .tag-word { background:#e0f2fe; color:#0369a1; }
-    .tag-excel { background:#dcfce7; color:#15803d; }
-    .tag-ppt { background:#ffedd5; color:#c2410c; }
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .upload-section {
+      background: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 32px;
+      cursor: pointer;
+    }
+
+    .upload-section:hover {
+      border-color: var(--primary);
+      background: #f0f7ff;
+    }
+
+    .upload-section.loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .hidden-input {
+      display: none;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111;
+    }
+
+    .doc-list {
+      border-top: 1px solid #e5e7eb;
+      padding-top: 20px;
+    }
+
+    .doc-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      background: #fff;
+    }
+
+    .doc-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .doc-icon {
+      font-size: 24px;
+      width: 40px;
+      text-align: center;
+    }
+
+    .doc-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .alert {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .alert-error {
+      background: #fee2e2;
+      border: 1px solid #fca5a5;
+      color: #b91c1c;
+      display: block;
+    }
+
+    .alert-success {
+      background: #ecfdf5;
+      border: 1px solid #6ee7b7;
+      color: #065f46;
+      display: block;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .tag-pdf {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .tag-word {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .tag-excel {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .tag-ppt {
+      background: #ffedd5;
+      color: #c2410c;
+    }
   </style>
 </head>
+
 <body>
   <div class="page">
     <div class="card">
       <div class="toolbar">
         <div>
           <h1>Quản lý Thư viện GitHub</h1>
-          <p style="color:var(--muted); font-size:14px; margin:0;">Dữ liệu được đồng lưu trực tiếp vào GitHub Repository.</p>
+          <p style="color:var(--muted); font-size:14px; margin:0;">Giải pháp Form-Submit Bypass CORS 100%.</p>
         </div>
         <div style="display:flex; gap:8px;">
           <button class="btn btn-secondary" onclick="renderDocs()">Làm mới</button>
@@ -60,63 +215,65 @@
       <div id="uploadBox" class="upload-section" onclick="document.getElementById('fileInput').click()">
         <div id="uploadIcon" style="font-size:40px; margin-bottom:8px;">📦</div>
         <h3 id="uploadTitle" style="margin:0 0 4px;">Nhấn để đăng tài liệu mới lên GitHub</h3>
-        <p style="color:var(--muted); font-size:13px; margin:0;">Hỗ trợ: PDF, Word, Excel, PowerPoint (Tối đa 25MB)</p>
-        <input type="file" id="fileInput" class="hidden-input" multiple 
-               accept=".doc,.docx,.pdf,.xls,.xlsx,.ppt,.pptx" />
+        <p style="color:var(--muted); font-size:13px; margin:0;">Hỗ trợ: PDF, Word, Excel (Tối đa 25MB)</p>
+        <input type="file" id="fileInput" class="hidden-input" multiple
+          accept=".doc,.docx,.pdf,.xls,.xlsx,.ppt,.pptx" />
       </div>
 
       <div class="doc-list" id="docList">
         <p style="text-align:center; color:var(--muted); padding:20px;">Đang tải danh sách từ GitHub...</p>
       </div>
+
+      <!-- Hidden Form for CORS Bypass -->
+      <form id="hiddenForm" style="display:none" method="POST" target="hiddenResponseFrame">
+        <textarea name="data" id="formDataField"></textarea>
+      </form>
+      <iframe name="hiddenResponseFrame" style="display:none"></iframe>
     </div>
   </div>
 
   <script src="auth.js"></script>
   <script>
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwEv1m-VMtuAxmSjl2icCuyjm5d_e4Yw5kHQIWSK5d5j_GPn13P3tz7eO4jpr2Gh4ndaw/exec';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwPcFiC1QIBqyaxyRMVSRO8wB2GiDgH01I3EaC8kFvO4mXmfZNbJmEQkPJ4YRP24Fyr9g/exec';
     const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/KhoaSu09/vanlam-website/main/docs/database.json';
 
     const uploadBox = document.getElementById('uploadBox');
     const fileInput = document.getElementById('fileInput');
     const docList = document.getElementById('docList');
     const statusAlert = document.getElementById('statusAlert');
+    const hiddenForm = document.getElementById('hiddenForm');
+    const formDataField = document.getElementById('formDataField');
 
     function showAlert(msg, isError = true) {
       statusAlert.textContent = msg;
       statusAlert.className = 'alert ' + (isError ? 'alert-error' : 'alert-success');
       statusAlert.style.display = 'block';
-      setTimeout(() => { statusAlert.style.display = 'none'; }, 5000);
+      setTimeout(() => { statusAlert.style.display = 'none'; }, 6000);
     }
 
     async function fetchDocs() {
       try {
-        const res = await fetch(GITHUB_RAW_URL + '?v=' + Date.now()); // Tránh cache
+        const res = await fetch(GITHUB_RAW_URL + '?v=' + Date.now());
         if (!res.ok) return [];
         return await res.json();
-      } catch (e) {
-        return [];
-      }
+      } catch (e) { return []; }
     }
 
     async function renderDocs() {
       docList.innerHTML = '<p style="text-align:center; color:var(--muted); padding:20px;">Đang tải dữ liệu từ GitHub...</p>';
       const docs = await fetchDocs();
-      docs.sort((a,b) => new Date(b.date) - new Date(a.date));
-
+      docs.sort((a, b) => new Date(b.date) - new Date(a.date));
       if (!docs.length) {
         docList.innerHTML = '<p style="text-align:center; color:var(--muted); padding:40px; border:1px dashed #cbd5e1; border-radius:12px;">Chưa có tài liệu nào trên GitHub.</p>';
         return;
       }
-
       docList.innerHTML = docs.map(doc => `
         <div class="doc-item">
           <div class="doc-info">
             <div class="doc-icon">${getFileIcon(doc.ext)}</div>
             <div>
               <div style="font-weight:600;">${doc.name} <span class="tag ${getTagClass(doc.ext)}">${doc.ext}</span></div>
-              <div class="doc-meta">
-                ${(doc.size / 1024).toFixed(1)} KB • ${new Date(doc.date).toLocaleDateString('vi-VN')}
-              </div>
+              <div class="doc-meta">${(doc.size / 1024).toFixed(1)} KB • ${new Date(doc.date).toLocaleDateString('vi-VN')}</div>
             </div>
           </div>
           <button class="btn btn-danger" onclick="deleteDoc('${doc.id}')">Xóa</button>
@@ -128,35 +285,29 @@
       if (ext === 'pdf') return '📕';
       if (ext === 'docx' || ext === 'doc') return '📘';
       if (ext.includes('xl')) return '📗';
-      if (ext.includes('pp')) return '📙';
       return '📄';
     }
-
     function getTagClass(ext) {
       if (ext === 'pdf') return 'tag-pdf';
       if (ext === 'docx' || ext === 'doc') return 'tag-word';
       if (ext.includes('xl')) return 'tag-excel';
-      if (ext.includes('pp')) return 'tag-ppt';
       return '';
+    }
+
+    function sendToGAS(payload) {
+      hiddenForm.action = GAS_URL;
+      formDataField.value = JSON.stringify(payload);
+      hiddenForm.submit();
     }
 
     async function deleteDoc(id) {
       if (!confirm('Xóa file này khỏi GitHub?')) return;
-      
       showLoading(true, 'Đang yêu cầu xóa khỏi GitHub...');
       try {
-        await fetch(GAS_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ type: 'delete_doc', id: id })
-        });
-        // Ở chế độ 'no-cors' không đọc được phản hồi, nên giả định là đã gửi lệnh
-        showAlert('Đã gửi yêu cầu xóa. Đang đợi GitHub cập nhật...', false);
-        setTimeout(renderDocs, 3000); 
-      } catch (e) {
-        showAlert('Lỗi kết nối: ' + e.message);
-      }
+        sendToGAS({ type: 'delete_doc', id: id });
+        showAlert('Đã gửi lệnh xóa qua Form... Đang đợi GitHub cập nhật...', false);
+        setTimeout(renderDocs, 5000);
+      } catch (e) { showAlert('Lỗi: ' + e.message); }
       showLoading(false);
     }
 
@@ -165,9 +316,8 @@
       if (!files.length) return;
 
       for (const file of files) {
-        showLoading(true, `Đang đẩy file "${file.name}" lên GitHub...`);
+        showLoading(true, `Đang gửi file "${file.name}" qua Form...`);
         try {
-          // 1. Đọc file
           const base64 = await readFileAsBase64(file);
           const metadata = {
             id: 'doc-' + Date.now(),
@@ -177,28 +327,19 @@
             date: new Date().toISOString()
           };
 
-          // 2. Gửi tới GAS (Sử dụng 'no-cors' để vượt qua lỗi trình duyệt chặn trên tên miền riêng)
-          await fetch(GAS_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({
-              type: 'upload_doc',
-              file: base64,
-              metadata: metadata
-            })
+          sendToGAS({
+            type: 'upload_doc',
+            file: base64,
+            metadata: metadata
           });
-          
-          showAlert(`Đã gửi file "${file.name}" lên hệ thống. Đang đợi GitHub đồng bộ...`, false);
-        } catch (err) {
-          console.error('Chi tiết lỗi:', err);
-          showAlert(`Lỗi xử lý file "${file.name}": ${err.message}`);
-        }
+
+          showAlert(`Đã gửi file "${file.name}". Vui lòng đợi GitHub đồng bộ (khoảng 10-15s).`, false);
+        } catch (err) { showAlert(`Lỗi: ${err.message}`); }
       }
-      
+
       showLoading(false);
       fileInput.value = '';
-      setTimeout(renderDocs, 5000); 
+      setTimeout(renderDocs, 10000); // 10s cho chắc chắn GitHub xong
     });
 
     function readFileAsBase64(file) {
@@ -225,4 +366,5 @@
     document.addEventListener('DOMContentLoaded', renderDocs);
   </script>
 </body>
+
 </html>
