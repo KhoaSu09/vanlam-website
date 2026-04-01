@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tài liệu | Vanlam technologies</title>
-  <meta name="description" content="Thư viện tài liệu Vanlam technologies. Xem và tải về các tài liệu Word, PDF, Excel, PowerPoint trực tuyến." />
+  <meta name="description" content="Thư viện tài liệu Vanlam technologies. Xem và tải về các tài liệu Word, PDF, Excel, PowerPoint trực tuyến từ GitHub." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -101,8 +101,6 @@
     .btn { padding:8px 14px; border:none; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:0.2s; flex:1; text-align:center; }
     .btn-view { background:var(--primary); color:#fff; }
     .btn-download { background:#f1f5f9; color:var(--text); }
-    .btn-view:hover { opacity:0.9; }
-    .btn-download:hover { background:#e2e8f0; }
 
     /* Upload Area (Local Viewer) */
     .upload-card {
@@ -130,13 +128,7 @@
     }
     .viewer-card.active { display: block; }
     .viewer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
-    .btn-close { padding: 8px 16px; background: #f1f5f9; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; }
-
     #documentOutput { font-size: 16px; line-height: 1.8; color: #334155; overflow-x:auto; }
-    #documentOutput h1, #documentOutput h2, #documentOutput h3 { color: var(--primary); margin: 1.5em 0 0.5em; }
-    #documentOutput table { width: 100%; border-collapse: collapse; margin: 1.5em 0; background:#fff; }
-    #documentOutput th, #documentOutput td { border: 1px solid var(--border); padding: 12px; text-align: left; }
-    #documentOutput th { background: #f8fafc; }
 
     /* Loader */
     .loader { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.8); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; }
@@ -151,7 +143,7 @@
 
   <div id="loader" class="loader">
       <div class="spinner"></div>
-      <p>Đang xử lý tài liệu...</p>
+      <p>Đang tải dữ liệu từ GitHub...</p>
   </div>
 
   <header>
@@ -175,36 +167,33 @@
   <main>
     <div class="container">
       <div class="hero">
-        <h1>Thư viện Tài liệu</h1>
-        <p>Xem trực tuyến hoặc tải về các tài liệu hướng dẫn, báo cáo và biểu mẫu.</p>
+        <h1>Thư viện GitHub</h1>
+        <p>Danh sách tài liệu được lưu trữ vĩnh viễn và đồng bộ trên đám mây GitHub.</p>
       </div>
 
       <div class="tabs">
-        <div class="tab-btn active" onclick="switchTab('library')">Thư viện chia sẻ</div>
-        <div class="tab-btn" onclick="switchTab('local')">Công cụ đọc file</div>
+        <div class="tab-btn active" onclick="switchTab('library')">Thư viện dùng chung</div>
+        <div class="tab-btn" onclick="switchTab('local')">Đọc file cá nhân</div>
       </div>
 
-      <!-- Tab: Library -->
       <div id="tabLibrary" class="tab-content active">
         <input type="text" id="libSearch" class="search-box" placeholder="Tìm kiếm tài liệu..." oninput="filterLibrary()">
         <div id="libList" class="lib-grid">
-            <p style="text-align:center; grid-column:1/-1; padding:40px; color:var(--muted);">Đang tải tài liệu...</p>
+            <p style="text-align:center; grid-column:1/-1; padding:40px; color:var(--muted);">Đang kết nối GitHub...</p>
         </div>
       </div>
 
-      <!-- Tab: Local Viewer -->
       <div id="tabLocal" class="tab-content">
         <div id="dropZone" class="upload-card" onclick="document.getElementById('fileInput').click()">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
           </svg>
           <h3>Công cụ xem nhanh</h3>
-          <p>Kéo thả file .docx, .pdf hoặc .xlsx vào đây để xem tạm thời.</p>
+          <p>Kéo thả file lên để xem ngay lập tức (không lưu lại).</p>
           <input type="file" id="fileInput" style="display:none" accept=".docx,.pdf,.xlsx,.xls" />
         </div>
       </div>
 
-      <!-- Shared Viewer Area -->
       <div id="viewerCard" class="viewer-card">
         <div class="viewer-header">
             <div id="viewTitle" class="viewer-title">Tên tài liệu</div>
@@ -215,21 +204,16 @@
     </div>
   </main>
 
-  <footer>
-    <div class="container">© 2025 Vanlam technologies. All rights reserved.</div>
-  </footer>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   
   <script>
-    const DOCS_KEY = 'vl_shared_documents_v1';
+    const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/KhoaSu09/vanlam-website/main/docs/database.json';
     let sharedDocs = [];
 
     function switchTab(tab) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-      
       if(tab === 'library') {
         document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
         document.getElementById('tabLibrary').classList.add('active');
@@ -240,11 +224,35 @@
       closeViewer();
     }
 
-    // --- Library Logic ---
-    function loadLibrary() {
-      try { sharedDocs = JSON.parse(localStorage.getItem(DOCS_KEY) || '[]'); }
-      catch (e) { sharedDocs = []; }
+    async function loadLibrary() {
+      try {
+        const res = await fetch(GITHUB_RAW_URL + '?v=' + Date.now()); // No cache
+        if (res.ok) sharedDocs = await res.json();
+      } catch (e) { sharedDocs = []; }
       renderLibrary(sharedDocs);
+    }
+
+    function renderLibrary(docs) {
+      const list = document.getElementById('libList');
+      if (!docs.length) {
+        list.innerHTML = '<p style="text-align:center; grid-column:1/-1; padding:40px; color:var(--muted);">GitHub hiện không có tài liệu nào.</p>';
+        return;
+      }
+      list.innerHTML = docs.sort((a,b) => new Date(b.date) - new Date(a.date)).map(doc => `
+        <div class="lib-item">
+          <div class="lib-header">
+            <span class="lib-icon">${getIcon(doc.ext)}</span>
+            <div>
+              <div class="lib-title">${doc.name}</div>
+              <div class="lib-meta">${(doc.size / 1024).toFixed(1)} KB • ${new Date(doc.date).toLocaleDateString('vi-VN')}</div>
+            </div>
+          </div>
+          <div class="lib-actions">
+            ${['pdf','docx','xlsx','xls'].includes(doc.ext) ? `<button class="btn btn-view" onclick="viewGitHubDoc('${doc.id}')">Xem</button>` : ''}
+            <a href="${doc.url}" target="_blank" class="btn btn-download" download="${doc.name}">Tải về</a>
+          </div>
+        </div>
+      `).join('');
     }
 
     function getIcon(ext) {
@@ -255,82 +263,50 @@
       return '📄';
     }
 
-    function renderLibrary(docs) {
-      const list = document.getElementById('libList');
-      if (!docs.length) {
-        list.innerHTML = '<p style="text-align:center; grid-column:1/-1; padding:40px; color:var(--muted);">Chưa có tài liệu nào được chia sẻ.</p>';
-        return;
-      }
-
-      list.innerHTML = docs.map(doc => `
-        <div class="lib-item">
-          <div class="lib-header">
-            <span class="lib-icon">${getIcon(doc.ext)}</span>
-            <div>
-              <div class="lib-title">${doc.name}</div>
-              <div class="lib-meta">${(doc.size / 1024).toFixed(1)} KB • ${new Date(doc.date).toLocaleDateString('vi-VN')}</div>
-            </div>
-          </div>
-          <div class="lib-actions">
-            ${['pdf','docx','xlsx','xls'].includes(doc.ext) ? `<button class="btn btn-view" onclick="viewSharedDoc('${doc.id}')">Xem</button>` : ''}
-            <button class="btn btn-download" onclick="downloadDoc('${doc.id}')">Tải về</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
     function filterLibrary() {
       const q = document.getElementById('libSearch').value.toLowerCase();
-      const filtered = sharedDocs.filter(d => d.name.toLowerCase().includes(q));
-      renderLibrary(filtered);
+      renderLibrary(sharedDocs.filter(d => d.name.toLowerCase().includes(q)));
     }
 
-    // --- Viewer Logic ---
-    function viewSharedDoc(id) {
+    async function viewGitHubDoc(id) {
       const doc = sharedDocs.find(d => d.id === id);
       if(!doc) return;
-      processData(doc.data, doc.name, doc.ext);
+      showLoader(true, 'Đang tải file từ GitHub...');
+      try {
+        const res = await fetch(doc.url);
+        const blob = await res.blob();
+        const reader = new FileReader();
+        reader.onload = (e) => processData(e.target.result, doc.name, doc.ext);
+        reader.readAsDataURL(blob);
+      } catch(e) {
+        alert('Lỗi khi tải file từ GitHub.');
+        showLoader(false);
+      }
     }
 
-    // Local Tool
-    document.getElementById('fileInput').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if(!file) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => processData(ev.target.result, file.name, file.name.split('.').pop().toLowerCase());
-      reader.readAsDataURL(file);
-    });
-
     function processData(dataUrl, name, ext) {
-      showLoader(true);
       document.getElementById('viewTitle').textContent = name;
       const base64Data = dataUrl.split(',')[1];
       const binary = atob(base64Data);
       const array = new Uint8Array(binary.length);
       for(let i=0; i<binary.length; i++) array[i] = binary.charCodeAt(i);
-
       const buffer = array.buffer;
 
       if (ext === 'pdf') {
         const blob = new Blob([buffer], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
-        document.getElementById('documentOutput').innerHTML = `<iframe src="${url}" width="100%" height="600px" style="border:none;"></iframe>`;
+        document.getElementById('documentOutput').innerHTML = `<iframe src="${url}" width="100%" height="800px" style="border:none;"></iframe>`;
         finishView();
       } else if (ext === 'docx') {
-        mammoth.convertToHtml({ arrayBuffer: buffer })
-          .then(res => { document.getElementById('documentOutput').innerHTML = res.value; finishView(); })
-          .catch(err => { alert('Không thể đọc file Word này.'); showLoader(false); });
+        mammoth.convertToHtml({ arrayBuffer: buffer }).then(res => { 
+            document.getElementById('documentOutput').innerHTML = res.value; 
+            finishView(); 
+        });
       } else if (ext === 'xlsx' || ext === 'xls') {
-        try {
-          const workbook = XLSX.read(buffer, { type: 'array' });
-          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-          const html = XLSX.utils.sheet_to_html(firstSheet);
-          document.getElementById('documentOutput').innerHTML = html;
-          finishView();
-        } catch(e) { alert('Không thể đọc file Excel này.'); showLoader(false); }
-      } else {
-        alert('Định dạng này chỉ hỗ trợ tải về.');
-        showLoader(false);
+        const workbook = XLSX.read(buffer, { type: 'array' });
+        const html = XLSX.utils.sheet_to_html(workbook.Sheets[workbook.SheetNames[0]]);
+        document.getElementById('documentOutput').innerHTML = html;
+        finishView();
       }
     }
 
@@ -342,15 +318,6 @@
       window.scrollTo({ top: document.getElementById('viewerCard').offsetTop - 80, behavior: 'smooth' });
     }
 
-    function downloadDoc(id) {
-      const doc = sharedDocs.find(d => d.id === id);
-      if(!doc) return;
-      const link = document.createElement('a');
-      link.href = doc.data;
-      link.download = doc.name;
-      link.click();
-    }
-
     function closeViewer() {
       document.getElementById('viewerCard').classList.remove('active');
       const activeTab = document.querySelector('.tab-btn.active').textContent.includes('Thư viện') ? 'tabLibrary' : 'tabLocal';
@@ -358,8 +325,10 @@
       document.getElementById('documentOutput').innerHTML = '';
     }
 
-    function showLoader(s) { 
-        document.getElementById('loader').classList.toggle('active', s); 
+    function showLoader(s, text = 'Đang tải...') { 
+        const loader = document.getElementById('loader');
+        loader.querySelector('p').textContent = text;
+        loader.classList.toggle('active', s); 
     }
 
     document.addEventListener('DOMContentLoaded', loadLibrary);

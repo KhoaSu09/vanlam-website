@@ -16,6 +16,7 @@
 
     .upload-section { background:#f8fafc; border:2px dashed #cbd5e1; border-radius:12px; padding:24px; text-align:center; margin-bottom:32px; cursor:pointer; }
     .upload-section:hover { border-color:var(--primary); background:#f0f7ff; }
+    .upload-section.loading { opacity:0.6; pointer-events:none; }
     .hidden-input { display:none; }
 
     .btn { padding:10px 18px; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
@@ -33,7 +34,6 @@
     .alert-error { background:#fee2e2; border:1px solid #fca5a5; color:#b91c1c; display:block; }
     .alert-success { background:#ecfdf5; border:1px solid #6ee7b7; color:#065f46; display:block; }
 
-    /* Tags for file types */
     .tag { font-size:11px; padding:2px 6px; border-radius:4px; font-weight:700; text-transform:uppercase; }
     .tag-pdf { background:#fee2e2; color:#b91c1c; }
     .tag-word { background:#e0f2fe; color:#0369a1; }
@@ -46,33 +46,37 @@
     <div class="card">
       <div class="toolbar">
         <div>
-          <h1>Quản lý Thư viện tài liệu</h1>
-          <p style="color:var(--muted); font-size:14px; margin:0;">Đăng tải tài liệu cho khách hàng tải về hoặc xem trực tuyến.</p>
+          <h1>Quản lý Thư viện GitHub</h1>
+          <p style="color:var(--muted); font-size:14px; margin:0;">Dữ liệu được đồng lưu trực tiếp vào GitHub Repository.</p>
         </div>
-        <a href="index.html" class="btn btn-secondary">Quay lại</a>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-secondary" onclick="renderDocs()">Làm mới</button>
+          <a href="index.html" class="btn btn-primary">Trang chủ</a>
+        </div>
       </div>
 
       <div id="statusAlert" class="alert"></div>
 
-      <div class="upload-section" onclick="document.getElementById('fileInput').click()">
-        <div style="font-size:40px; margin-bottom:8px;">📦</div>
-        <h3 style="margin:0 0 4px;">Nhấn để đăng tài liệu mới</h3>
-        <p style="color:var(--muted); font-size:13px; margin:0;">Hỗ trợ: PDF, Word, Excel, PowerPoint (Tối đa 2MB)</p>
+      <div id="uploadBox" class="upload-section" onclick="document.getElementById('fileInput').click()">
+        <div id="uploadIcon" style="font-size:40px; margin-bottom:8px;">📦</div>
+        <h3 id="uploadTitle" style="margin:0 0 4px;">Nhấn để đăng tài liệu mới lên GitHub</h3>
+        <p style="color:var(--muted); font-size:13px; margin:0;">Hỗ trợ: PDF, Word, Excel, PowerPoint (Tối đa 25MB)</p>
         <input type="file" id="fileInput" class="hidden-input" multiple 
                accept=".doc,.docx,.pdf,.xls,.xlsx,.ppt,.pptx" />
       </div>
 
       <div class="doc-list" id="docList">
-        <p style="text-align:center; color:var(--muted); padding:20px;">Đang tải danh sách tài liệu...</p>
+        <p style="text-align:center; color:var(--muted); padding:20px;">Đang tải danh sách từ GitHub...</p>
       </div>
     </div>
   </div>
 
   <script src="auth.js"></script>
   <script>
-    const DOCS_KEY = 'vl_shared_documents_v1';
-    const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbzzAK25WejozmHCtS9oikv1G60i-O8wjpjxuJuQafdqy-bOkQbJYEAqhxnr57udxU805Q/exec';
+    const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/KhoaSu09/vanlam-website/main/docs/database.json';
 
+    const uploadBox = document.getElementById('uploadBox');
     const fileInput = document.getElementById('fileInput');
     const docList = document.getElementById('docList');
     const statusAlert = document.getElementById('statusAlert');
@@ -80,44 +84,27 @@
     function showAlert(msg, isError = true) {
       statusAlert.textContent = msg;
       statusAlert.className = 'alert ' + (isError ? 'alert-error' : 'alert-success');
+      statusAlert.style.display = 'block';
       setTimeout(() => { statusAlert.style.display = 'none'; }, 5000);
     }
 
-    function loadDocs() {
-      try { return JSON.parse(localStorage.getItem(DOCS_KEY) || '[]'); }
-      catch (e) { return []; }
-    }
-
-    function saveDocs(docs) {
+    async function fetchDocs() {
       try {
-        localStorage.setItem(DOCS_KEY, JSON.stringify(docs));
-        return true;
+        const res = await fetch(GITHUB_RAW_URL + '?v=' + Date.now()); // Tránh cache
+        if (!res.ok) return [];
+        return await res.json();
       } catch (e) {
-        showAlert('Dung lượng trình duyệt đầy! Không thể lưu thêm tài liệu. Vui lòng xóa bài cũ.');
-        return false;
+        return [];
       }
     }
 
-    function getFileIcon(ext) {
-      if (['pdf'].includes(ext)) return '📕';
-      if (['doc', 'docx'].includes(ext)) return '📘';
-      if (['xls', 'xlsx'].includes(ext)) return '📗';
-      if (['ppt', 'pptx'].includes(ext)) return '📙';
-      return '📄';
-    }
+    async function renderDocs() {
+      docList.innerHTML = '<p style="text-align:center; color:var(--muted); padding:20px;">Đang tải dữ liệu từ GitHub...</p>';
+      const docs = await fetchDocs();
+      docs.sort((a,b) => new Date(b.date) - new Date(a.date));
 
-    function getTagClass(ext) {
-      if (['pdf'].includes(ext)) return 'tag-pdf';
-      if (['doc', 'docx'].includes(ext)) return 'tag-word';
-      if (['xls', 'xlsx'].includes(ext)) return 'tag-excel';
-      if (['ppt', 'pptx'].includes(ext)) return 'tag-ppt';
-      return '';
-    }
-
-    function renderDocs() {
-      const docs = loadDocs().sort((a,b) => new Date(b.date) - new Date(a.date));
       if (!docs.length) {
-        docList.innerHTML = '<p style="text-align:center; color:var(--muted); padding:40px; border:1px dashed #cbd5e1; border-radius:12px;">Chưa có tài liệu nào được đăng.</p>';
+        docList.innerHTML = '<p style="text-align:center; color:var(--muted); padding:40px; border:1px dashed #cbd5e1; border-radius:12px;">Chưa có tài liệu nào trên GitHub.</p>';
         return;
       }
 
@@ -137,52 +124,83 @@
       `).join('');
     }
 
-    function deleteDoc(id) {
-      if (!confirm('Bạn có chắc chắn muốn xóa tài liệu này không?')) return;
-      const docs = loadDocs().filter(d => d.id !== id);
-      saveDocs(docs);
-      renderDocs();
-      showAlert('Đã xóa tài liệu thành công.', false);
+    function getFileIcon(ext) {
+      if (ext === 'pdf') return '📕';
+      if (ext === 'docx' || ext === 'doc') return '📘';
+      if (ext.includes('xl')) return '📗';
+      if (ext.includes('pp')) return '📙';
+      return '📄';
+    }
+
+    function getTagClass(ext) {
+      if (ext === 'pdf') return 'tag-pdf';
+      if (ext === 'docx' || ext === 'doc') return 'tag-word';
+      if (ext.includes('xl')) return 'tag-excel';
+      if (ext.includes('pp')) return 'tag-ppt';
+      return '';
+    }
+
+    async function deleteDoc(id) {
+      if (!confirm('Xóa file này khỏi GitHub?')) return;
+      
+      showLoading(true, 'Đang yêu cầu xóa khỏi GitHub...');
+      try {
+        const res = await fetch(GAS_URL, {
+          method: 'POST',
+          body: JSON.stringify({ type: 'delete_doc', id: id })
+        });
+        const result = await res.json();
+        if (result.success) {
+           showAlert('Đã xóa thành công. Có thể mất 1-2 phút để GitHub cập nhật lại danh sách.', false);
+           setTimeout(renderDocs, 2000); // Đợi 2s rồi tải lại
+        } else {
+           showAlert('Lỗi: ' + result.message);
+        }
+      } catch (e) {
+        showAlert('Lỗi kết nối Server.');
+      }
+      showLoading(false);
     }
 
     fileInput.addEventListener('change', async (e) => {
       const files = Array.from(e.target.files);
       if (!files.length) return;
 
-      const docs = loadDocs();
-      let added = 0;
-
       for (const file of files) {
-        if (file.size > MAX_SIZE) {
-          showAlert(`File "${file.name}" vượt quá 2MB. Vui lòng nén file hoặc dùng link Drive.`);
-          continue;
-        }
-
+        showLoading(true, `Đang đẩy file "${file.name}" lên GitHub...`);
         try {
-          const data = await readFileAsBase64(file);
-          const ext = file.name.split('.').pop().toLowerCase();
-          
-          docs.push({
-            id: 'doc-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+          const base64 = await readFileAsBase64(file);
+          const metadata = {
+            id: 'doc-' + Date.now(),
             name: file.name,
-            ext: ext,
+            ext: file.name.split('.').pop().toLowerCase(),
             size: file.size,
-            date: new Date().toISOString(),
-            data: data
-          });
-          added++;
-        } catch (err) {
-          showAlert(`Lỗi khi đọc file "${file.name}"`);
-        }
-      }
+            date: new Date().toISOString()
+          };
 
-      if (added > 0) {
-        if (saveDocs(docs)) {
-            showAlert(`Đã lưu thành công ${added} tài liệu.`, false);
-            renderDocs();
+          const res = await fetch(GAS_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              type: 'upload_doc',
+              file: base64,
+              metadata: metadata
+            })
+          });
+          
+          const result = await res.json();
+          if (result.success) {
+             showAlert(`Đã đăng tải thành công "${file.name}".`, false);
+          } else {
+             showAlert(`Lỗi upload "${file.name}": ` + result.message);
+          }
+        } catch (err) {
+          showAlert(`Lỗi xử lý file "${file.name}"`);
         }
       }
+      
+      showLoading(false);
       fileInput.value = '';
+      setTimeout(renderDocs, 3000); // Đợi GitHub Sync xong rồi load lại
     });
 
     function readFileAsBase64(file) {
@@ -194,10 +212,19 @@
       });
     }
 
-    // Init
-    document.addEventListener('DOMContentLoaded', () => {
-        renderDocs();
-    });
+    function showLoading(active, text = '') {
+      if (active) {
+        uploadBox.classList.add('loading');
+        document.getElementById('uploadTitle').textContent = text;
+        document.getElementById('uploadIcon').textContent = '⏳';
+      } else {
+        uploadBox.classList.remove('loading');
+        document.getElementById('uploadTitle').textContent = 'Nhấn để đăng tài liệu mới lên GitHub';
+        document.getElementById('uploadIcon').textContent = '📦';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', renderDocs);
   </script>
 </body>
 </html>
