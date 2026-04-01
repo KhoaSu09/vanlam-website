@@ -73,7 +73,7 @@
 
   <script src="auth.js"></script>
   <script>
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbzzAK25WejozmHCtS9oikv1G60i-O8wjpjxuJuQafdqy-bOkQbJYEAqhxnr57udxU805Q/exec';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwEv1m-VMtuAxmSjl2icCuyjm5d_e4Yw5kHQIWSK5d5j_GPn13P3tz7eO4jpr2Gh4ndaw/exec';
     const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/KhoaSu09/vanlam-website/main/docs/database.json';
 
     const uploadBox = document.getElementById('uploadBox');
@@ -189,18 +189,22 @@
             })
           });
           
-          if (!res.ok) {
-            throw new Error(`Server trả về lỗi ${res.status}: ${res.statusText}`);
+          let result;
+          const resText = await res.text();
+          try {
+            result = JSON.parse(resText);
+          } catch (e) {
+            console.error('Không thể parse JSON từ GAS:', resText);
+            throw new Error(`Phản hồi từ Server không phải JSON: ${resText.substring(0, 100)}...`);
           }
 
-          const result = await res.json();
           if (result.success) {
              showAlert(`Đã đăng tải thành công "${file.name}".`, false);
           } else {
-             showAlert(`Lỗi upload "${file.name}": ` + (result.message || result.error || 'Không xác định'));
+             showAlert(`Lỗi từ Server: ` + (result.message || result.error || 'Lỗi không xác định'));
           }
         } catch (err) {
-          console.error('Lỗi upload:', err);
+          console.error('Chi tiết lỗi:', err);
           showAlert(`Lỗi xử lý file "${file.name}": ${err.message}`);
         }
       }

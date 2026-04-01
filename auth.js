@@ -77,7 +77,7 @@ window.vlAuth = {
     const newUser = { username, password, role: 'user' };
 
     try {
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbzzAK25WejozmHCtS9oikv1G60i-O8wjpjxuJuQafdqy-bOkQbJYEAqhxnr57udxU805Q/exec';
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbwEv1m-VMtuAxmSjl2icCuyjm5d_e4Yw5kHQIWSK5d5j_GPn13P3tz7eO4jpr2Gh4ndaw/exec';
       await fetch(scriptURL, {
         method: 'POST',
         body: JSON.stringify(newUser),
