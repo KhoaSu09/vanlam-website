@@ -1,124 +1,168 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sản phẩm | Vanlam technologies</title>
-  <meta name="description" content="Danh sách sản phẩm của Vanlam technologies. Khám phá các sản phẩm công nghệ và giải pháp số hóa." />
-  <meta name="keywords" content="sản phẩm, shop, Vanlam technologies, công nghệ" />
-  <meta property="og:title" content="Sản phẩm | Vanlam technologies" />
-  <meta property="og:description" content="Mua sắm sản phẩm công nghệ từ Vanlam technologies. Các giải pháp số hóa và thiết bị hiện đại." />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://example.com/og-image-shop.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sản phẩm | Vanlam Technologies</title>
+  <meta name="description" content="Danh sách sản phẩm của Vanlam Technologies. Khám phá các sản phẩm công nghệ và giải pháp số hóa." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="index.css">
+  
   <style>
-    body { font-family: Inter, system-ui, Arial; margin:0; color:#111; background:#f8fafc }
-    .container { max-width:1200px; margin:32px auto; padding:0 20px }
-    header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px }
-    h1 { margin:0 }
-    nav { display:flex; gap:16px }
-    a { color:#0f3c7d; text-decoration:none }
-    a:hover { text-decoration:underline }
-    a.active { font-weight:600; }
+    .page-header {
+      background: var(--primary);
+      color: white;
+      padding: 80px 0;
+      text-align: center;
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+      padding: 60px 0;
+    }
+    .product-card {
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+    .product-card:hover .product-img {
+      transform: scale(1.05);
+    }
+    .product-info {
+      padding: 1.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    
+    /* Cart Floating Button */
+    .cart-floating {
+      position: fixed;
+      bottom: 100px;
+      right: 24px;
+      width: 60px;
+      height: 60px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-lg);
+      cursor: pointer;
+      z-index: 1000;
+      transition: transform 0.2s;
+    }
+    .cart-floating:hover { transform: scale(1.1); }
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #ef4444;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-    /* Products Grid */
-    .products-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px; margin-top:24px }
-    .product-card { background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 4px 14px rgba(2,6,23,.04); transition:transform .2s, box-shadow .2s; cursor:pointer }
-    .product-card:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(2,6,23,.08) }
-    .product-header { padding:20px }
-    .product-title { font-size:18px; font-weight:600; margin:0 0 8px; color:#0f3c7d }
-    .product-price { font-size:16px; font-weight:700; color:#0f3c7d; margin-bottom:12px }
-    .product-description { color:#4b5563; font-size:14px; line-height:1.5; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; line-clamp:3; }
-    .product-image { width:100%; height:200px; object-fit:cover; display:block }
-    .add-to-cart { display:block; margin-top:12px; padding:8px 12px; background:#0f3c7d; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:14px; text-align:center; }
-    .add-to-cart:hover { background:#0d2a5c; }
-
-    .product-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center }
-    .product-modal.active { display:flex }
-    .product-modal-content { background:#fff; border-radius:12px; padding:20px; max-width:600px; max-height:80vh; overflow-y:auto; }
-    .product-modal-image { width:100%; max-height:300px; object-fit:cover; border-radius:8px; margin-bottom:16px; }
-    .product-modal-title { font-size:24px; font-weight:700; color:#0f3c7d; margin:0 0 8px; }
-    .product-modal-price { font-size:20px; font-weight:700; color:#0f3c7d; margin-bottom:16px; }
-    .product-modal-description { color:#4b5563; line-height:1.6; margin-bottom:20px; }
-    .product-modal-actions { display:flex; gap:12px; }
-    .product-modal-actions button { flex:1; padding:12px; border:none; border-radius:8px; font-size:16px; cursor:pointer; }
-    .add-to-cart-modal { background:#0f3c7d; color:#fff; }
-    .add-to-cart-modal:hover { background:#0d2a5c; }
-    .close-modal { background:#e5e7eb; color:#111; }
-    .close-modal:hover { background:#d1d5db; }
-
-    .cart-icon { position:fixed; top:20px; right:20px; background:#0f3c7d; color:#fff; border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:20px; z-index:1000; }
-    .cart-count { position:absolute; top:-5px; right:-5px; background:#c92a2a; color:#fff; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-size:12px; }
-
-    .cart-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center }
-    .cart-modal.active { display:flex }
-    .cart-content { background:#fff; border-radius:12px; padding:20px; max-width:500px; max-height:80vh; overflow-y:auto; }
-    .cart-item { display:flex; align-items:center; gap:12px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid #e5e7eb; }
-    .cart-item img { width:60px; height:60px; object-fit:cover; border-radius:6px; }
-    .cart-item-details { flex:1; }
-    .cart-item-title { font-weight:600; margin:0; }
-    .cart-item-price { color:#0f3c7d; font-weight:600; }
-    .remove-item { background:#c92a2a; color:#fff; border:none; border-radius:4px; padding:4px 8px; cursor:pointer; }
-    .cart-total { font-size:18px; font-weight:700; text-align:right; margin:20px 0; }
-    .checkout-btn { width:100%; padding:12px; background:#0f3c7d; color:#fff; border:none; border-radius:8px; font-size:16px; cursor:pointer; }
-    .checkout-btn:hover { background:#0d2a5c; }
-
-    .order-message { font-size:14px; margin-bottom:12px; color:#065f46; background:#ecfdf5; border:1px solid #a7f3d0; padding:10px; border-radius:8px; }
-    .order-history { margin-top:14px; border-top:1px solid #e5e7eb; padding-top:12px; }
-    .order-history h4 { margin:0 0 8px; font-size:16px; }
-    .order-history-item { font-size:14px; color:#374151; margin-bottom:6px; }
-
-    .empty-state { text-align:center; color:#6b7280; padding:60px 20px }
-    .empty-state p { margin:0 }
-
-    footer { background:#f3f4f6; padding:20px 0; margin-top:40px; text-align:center; font-size:13px; color:#6b7280 }
+    /* Modal Modernization */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--card-bg);
+      color: var(--text);
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: var(--radius);
+      padding: 2rem;
+      position: relative;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Sản phẩm</h1>
-      <nav>
-        <a href="index.html">Trang chủ</a>
-        <a href="services.html">Dịch vụ</a>
-        <a href="about.html">Giới thiệu</a>
-        <a href="contact.html">Liên hệ</a>
-        <a href="news.html">Tin tức</a>
-        <a href="shop.html" class="active">Sản phẩm</a>
-        <a href="documents.html">Tài liệu</a>
-        <a href="posts.html" class="admin-only">QL Tin tức</a>
-        <a href="products.html" class="admin-only">QL Sản phẩm</a>
-        <a href="manage-documents.html" class="admin-only">QL Tài liệu</a>
-      </nav>
-    </header>
 
-    <div id="productsList" class="products-grid"></div>
+  <!-- Header is injected by ui.js -->
+
+  <main>
+    <section class="page-header reveal">
+      <div class="container">
+        <h1 style="color: white; margin-bottom: 0.5rem;">Cửa hàng công nghệ</h1>
+        <p style="color: #94a3b8;">Khám phá các thiết bị và giải pháp chuyển đổi số hiện đại nhất</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div id="productsList" class="products-grid">
+          <!-- Dynamically populated by JS -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Cart Floating Button -->
+  <div class="cart-floating" onclick="openCart()">
+    🛒 <span class="cart-badge" id="cartCount">0</span>
   </div>
 
-  <!-- Cart Icon -->
-  <div class="cart-icon" onclick="openCart()">
-    🛒
-    <div class="cart-count" id="cartCount">0</div>
-  </div>
-
-  <!-- Product Detail Modal -->
-  <div id="productModal" class="product-modal">
-    <div class="product-modal-content">
-      <img id="productModalImage" class="product-modal-image" src="" alt="" />
-      <h2 id="productModalTitle" class="product-modal-title"></h2>
-      <div id="productModalPrice" class="product-modal-price"></div>
-      <p id="productModalDescription" class="product-modal-description"></p>
-      <div id="productModalActions" class="product-modal-actions">
-        <button class="add-to-cart-modal" onclick="addToCartFromModal()">Thêm vào giỏ</button>
-        <button class="close-modal" onclick="closeProductModal()">Đóng</button>
+  <!-- Product Modal -->
+  <div id="productModal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeProductModal()" style="position:absolute; top:1rem; right:1rem; background:var(--border); border:none; width:32px; height:32px; border-radius:50%; cursor:pointer;">✕</button>
+      <img id="productModalImage" src="" alt="" style="width:100%; border-radius:var(--radius); margin-bottom:1.5rem;">
+      <h2 id="productModalTitle" style="margin-bottom:0.5rem;"></h2>
+      <div id="productModalPrice" class="product-price"></div>
+      <p id="productModalDescription" style="margin-bottom:2rem; line-height:1.6; color:var(--muted);"></p>
+      <div id="productModalActions" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+        <!-- Injected by JS -->
       </div>
     </div>
   </div>
 
+  <!-- Footer is injected by ui.js -->
 
-
-  <footer>
-    © 2025 Vanlam technologies. All rights reserved.
-  </footer>
+  <script src="auth.js"></script>
+  <script src="cart.js"></script>
+  <script src="ui.js"></script>
 
   <script>
     const PRODUCTS_KEY = 'vl_products_v1';
@@ -127,111 +171,52 @@
       try{ return JSON.parse(localStorage.getItem(PRODUCTS_KEY) || '[]') }catch(e){ return [] }
     }
 
-    function escapeHtml(s){
-      return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    }
-
     function formatPrice(price) {
       if (!price || price === 0) return 'Liên hệ';
       return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
     }
 
-    function getPreview(description, length=150){
-      return description.substring(0, length) + (description.length > length ? '...' : '');
-    }
-
     function renderProducts(){
       const container = document.getElementById('productsList');
+      if (!container) return;
       const products = loadProducts();
       
       if(!products.length){
-        container.innerHTML = '<div class="empty-state"><p>Chưa có sản phẩm nào</p></div>';
-        updateSeoJsonLd([]);
+        container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 100px 0;">Chưa có sản phẩm nào.</div>';
         return;
       }
       
-      container.innerHTML = products.map(p => {
-        const imageHtml = p.image ? `<img class="product-image" src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy" />` : '';
+      container.innerHTML = products.map((p, index) => {
+        const delay = (index % 4) * 0.1;
         return `
-        <article class="product-card" onclick="handleViewDetails('${p.id}')">
-          ${imageHtml}
-          <div class="product-header">
-            <h2 class="product-title">${escapeHtml(p.name)}</h2>
+        <article class="card product-card reveal" style="transition-delay: ${delay}s">
+          ${p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}" onclick="handleViewDetails('${p.id}')">` : ''}
+          <div class="product-info">
+            <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;">${p.name}</h3>
             <div class="product-price">${formatPrice(p.price)}</div>
-            <p class="product-description">${escapeHtml(getPreview(p.description))}</p>
-            <div style="display:flex; gap:8px; margin-top:12px;">
-              ${p.price > 0 ? `<button class="add-to-cart add-direct-cart" onclick="event.stopPropagation(); handleAddToCart('${p.id}')">Thêm vào giỏ</button>` : `<a href="contact.html" class="add-to-cart add-direct-cart" style="text-decoration:none; display:flex; align-items:center; justify-content:center; box-sizing:border-box;">Liên hệ ngay</a>`}
-              <button class="add-to-cart view-details" onclick="event.stopPropagation(); handleViewDetails('${p.id}')" style="background:#f3f4f6; color:#0f3c7d;">Xem chi tiết</button>
+            <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; -webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;">
+              ${p.description}
+            </p>
+            <div style="margin-top: auto; display: flex; gap: 0.5rem;">
+              ${p.price > 0 ? 
+                `<button class="btn btn-primary" style="flex:1; font-size:0.8rem; padding:8px;" onclick="handleAddToCart('${p.id}')">Thêm vào giỏ</button>` : 
+                `<a href="contact.html" class="btn btn-primary" style="flex:1; font-size:0.8rem; padding:8px;">Liên hệ ngay</a>`
+              }
+              <button class="btn" style="flex:1; font-size:0.8rem; padding:8px; border:1px solid var(--border);" onclick="handleViewDetails('${p.id}')">Chi tiết</button>
             </div>
           </div>
         </article>
       `;
       }).join('');
 
-      updateSeoJsonLd(products);
+      if (window.initScrollReveal) window.initScrollReveal();
     }
-
-    function updateSeoJsonLd(products) {
-      const schema = {
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        "name": "Sản phẩm - Vanlam technologies",
-        "url": window.location.href,
-        "description": "Danh sách sản phẩm công nghệ từ Vanlam technologies.",
-        "itemListElement": products.map((p, index) => ({
-          "@type": "Product",
-          "position": index + 1,
-          "name": p.name,
-          "description": p.description,
-          "image": p.image,
-          "offers": {
-            "@type": "Offer",
-            "price": p.price,
-            "priceCurrency": "VND"
-          },
-          "url": `${window.location.origin}${window.location.pathname}#${p.id}`
-        }))
-      };
-
-      let schemaEl = document.getElementById('ldJson');
-      if (!schemaEl) {
-        schemaEl = document.createElement('script');
-        schemaEl.id = 'ldJson';
-        schemaEl.type = 'application/ld+json';
-        document.head.appendChild(schemaEl);
-      }
-      schemaEl.textContent = JSON.stringify(schema, null, 2);
-
-      // Add hidden content for SEO
-      const seoDiv = document.getElementById('seoContent');
-      if (!seoDiv) {
-        const newSeoDiv = document.createElement('div');
-        newSeoDiv.id = 'seoContent';
-        newSeoDiv.style.display = 'none';
-        document.body.appendChild(newSeoDiv);
-      }
-      document.getElementById('seoContent').innerHTML = products.map(p => `
-        <article>
-          <h2>${escapeHtml(p.name)}</h2>
-          <p>Giá: ${formatPrice(p.price)}</p>
-          <p>${escapeHtml(p.description)}</p>
-        </article>
-      `).join('');
-    }
-
-    // Use DOMContentLoaded for initial render
-    document.addEventListener('DOMContentLoaded', () => {
-      renderProducts();
-    });
 
     function handleAddToCart(productId) {
       const products = loadProducts();
       const p = products.find(item => item.id === productId);
-      if (!p) return;
-      if (typeof addToCart === 'function') {
+      if (p && typeof addToCart === 'function') {
         addToCart(p.id, p.name, p.price, p.image, 1);
-      } else {
-        console.error('addToCart function not found. cart.js might not be loaded.');
       }
     }
 
@@ -239,31 +224,22 @@
       const products = loadProducts();
       const p = products.find(item => item.id === productId);
       if (!p) return;
-      openProductModal(p.id, p.name, p.price, p.image, p.description);
-    }
 
-    // Cart states
-    let currentProduct = null;
-
-    // Product modal functions
-    function openProductModal(id, name, price, image, description) {
-      currentProduct = { id, name, price, image, description };
-      document.getElementById('productModalImage').src = image || '';
-      document.getElementById('productModalImage').alt = name;
-      document.getElementById('productModalTitle').textContent = name;
-      document.getElementById('productModalPrice').textContent = formatPrice(price);
-      document.getElementById('productModalDescription').textContent = description;
+      document.getElementById('productModalImage').src = p.image || '';
+      document.getElementById('productModalTitle').textContent = p.name;
+      document.getElementById('productModalPrice').textContent = formatPrice(p.price);
+      document.getElementById('productModalDescription').textContent = p.description;
       
-      const actionsDiv = document.getElementById('productModalActions');
-      if (price > 0) {
-        actionsDiv.innerHTML = `
-          <button class="add-to-cart-modal" onclick="addToCartFromModal()">Thêm vào giỏ</button>
-          <button class="close-modal" onclick="closeProductModal()">Đóng</button>
+      const actions = document.getElementById('productModalActions');
+      if (p.price > 0) {
+        actions.innerHTML = `
+          <button class="btn btn-primary" onclick="addToCartFromModal('${p.id}')">Thêm vào giỏ</button>
+          <button class="btn" style="border:1px solid var(--border);" onclick="closeProductModal()">Đóng</button>
         `;
       } else {
-        actionsDiv.innerHTML = `
-          <a href="contact.html" class="add-to-cart-modal" style="text-decoration:none; text-align:center; display:flex; align-items:center; justify-content:center; box-sizing:border-box;">Liên hệ ngay</a>
-          <button class="close-modal" onclick="closeProductModal()">Đóng</button>
+        actions.innerHTML = `
+          <a href="contact.html" class="btn btn-primary" style="text-align:center;">Liên hệ ngay</a>
+          <button class="btn" style="border:1px solid var(--border);" onclick="closeProductModal()">Đóng</button>
         `;
       }
 
@@ -272,19 +248,18 @@
 
     function closeProductModal() {
       document.getElementById('productModal').classList.remove('active');
-      currentProduct = null;
     }
 
-    function addToCartFromModal() {
-      if (currentProduct) {
-        addToCart(currentProduct.id, currentProduct.name, currentProduct.price, currentProduct.image);
-        closeProductModal();
-      }
+    function addToCartFromModal(id) {
+      handleAddToCart(id);
+      closeProductModal();
     }
 
-
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProducts();
+      const modal = document.getElementById('productModal');
+      modal.addEventListener('click', (e) => { if(e.target === modal) closeProductModal(); });
+    });
   </script>
-  <script src="cart.js?v=20260401"></script>
-  <script src="auth.js?v=20260401"></script>
 </body>
 </html>

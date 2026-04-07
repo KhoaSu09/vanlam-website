@@ -1,256 +1,211 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tin tức | Vanlam technologies</title>
-  <meta name="description" content="Tin tức và bài viết mới nhất từ Vanlam technologies. Cập nhật thông tin về CNTT, chuyển đổi số và giải pháp công nghệ." />
-  <meta name="keywords" content="tin tức, bài viết, Vanlam technologies, CNTT, chuyển đổi số" />
-  <meta property="og:title" content="Tin tức | Vanlam technologies" />
-  <meta property="og:description" content="Khám phá các bài viết và tin tức mới nhất về công nghệ thông tin, chuyển đổi số từ Vanlam technologies." />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://example.com/og-image-news.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tin tức | Vanlam Technologies</title>
+  <meta name="description" content="Tin tức và bài viết mới nhất từ Vanlam Technologies. Cập nhật thông tin về CNTT, chuyển đổi số và giải pháp công nghệ." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="index.css">
+  
   <style>
-    body { font-family: Inter, system-ui, Arial; margin:0; color:#111; background:#f8fafc }
-    .container { max-width:900px; margin:32px auto; padding:0 20px }
-    header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px }
-    h1 { margin:0 }
-    nav { display:flex; gap:16px; align-items:center }
-    a { color:#0f3c7d; text-decoration:none }
-    a:hover { text-decoration:underline }
-    a.active { font-weight:600; }
-    .btn-add { padding:8px 14px; border-radius:8px; background:#0f3c7d; color:#fff; text-decoration:none; font-weight:600; }
-    .btn-add:hover { filter:brightness(1.1); }
-
-    /* Posts Grid */
-    .posts-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px; margin-top:24px }
-    .post-card { background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 4px 14px rgba(2,6,23,.04); transition:transform .2s, box-shadow .2s; cursor:pointer }
-    .post-card:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(2,6,23,.08) }
-    .post-header { padding:20px }
-    .post-title { font-size:18px; font-weight:600; margin:0 0 8px; color:#0f3c7d }
-    .post-meta { font-size:13px; color:#6b7280; margin-bottom:12px }
-    .post-preview { color:#4b5563; font-size:14px; line-height:1.5; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; line-clamp:3; }
-    .post-image { width:100%; height:160px; object-fit:cover; display:block }
-    .modal-image { width:100%; max-height:320px; object-fit:cover; border-radius:10px; margin-bottom:18px; }
-
-    .empty-state { text-align:center; color:#6b7280; padding:60px 20px }
-    .empty-state p { margin:0 }
-
-    /* Modal */
-    .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center }
-    .modal.active { display:flex }
-    .modal-content { background:#fff; border-radius:12px; padding:40px; max-width:700px; max-height:80vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,.3) }
-    .modal-header { display:flex; justify-content:space-between; align-items:start; margin-bottom:20px }
-    .modal-title { font-size:28px; font-weight:700; color:#0f3c7d; margin:0 }
-    .modal-close { background:none; border:none; font-size:28px; cursor:pointer; color:#6b7280; padding:0; width:30px; height:30px }
-    .modal-close:hover { color:#111 }
-    .modal-meta { font-size:14px; color:#6b7280; margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid #e5e7eb }
-    .modal-body { color:#4b5563; line-height:1.8; font-size:15px; white-space:pre-wrap; word-break:break-word }
-
-    footer { background:#f3f4f6; padding:20px 0; margin-top:40px; text-align:center; font-size:13px; color:#6b7280 }
+    .page-header {
+      background: var(--primary);
+      color: white;
+      padding: 80px 0;
+      text-align: center;
+    }
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      padding: 60px 0;
+    }
+    .post-card {
+      padding: 0;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .post-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+    .post-card:hover .post-img {
+      transform: scale(1.05);
+    }
+    .post-content {
+      padding: 1.5rem;
+    }
+    .post-date {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    
+    /* Modal Modernization */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--card-bg);
+      color: var(--text);
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: var(--radius);
+      padding: 2rem;
+      position: relative;
+      box-shadow: var(--shadow-lg);
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--border);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    .modal-body img {
+      width: 100%;
+      border-radius: var(--radius);
+      margin: 1.5rem 0;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Tin tức</h1>
-      <nav>
-        <a href="index.html">Trang chủ</a>
-        <a href="services.html">Dịch vụ</a>
-        <a href="about.html">Giới thiệu</a>
-        <a href="contact.html">Liên hệ</a>
-        <a href="news.html" class="active">Tin tức</a>
-        <a href="shop.html">Sản phẩm</a>
-        <a href="documents.html">Tài liệu</a>
-        <a href="posts.html" class="admin-only">QL Tin tức</a>
-        <a href="products.html" class="admin-only">QL Sản phẩm</a>
-        <a href="manage-documents.html" class="admin-only">QL Tài liệu</a>
-      </nav>
-    </header>
 
-    <div id="postsList" class="posts-grid"></div>
-  </div>
+  <!-- Header is injected by ui.js -->
+
+  <main>
+    <section class="page-header reveal">
+      <div class="container">
+        <h1 style="color: white; margin-bottom: 0.5rem;">Tin tức & Sự kiện</h1>
+        <p style="color: #94a3b8;">Cập nhật những xu hướng công nghệ và hoạt động mới nhất từ Vanlam Technologies</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div id="postsList" class="posts-grid">
+          <!-- Dynamically populated by JS -->
+        </div>
+      </div>
+    </section>
+  </main>
 
   <!-- Modal Detail -->
   <div id="postModal" class="modal">
     <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="modalTitle" class="modal-title"></h2>
-        <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div id="modalDate" class="post-date"></div>
+      <h2 id="modalTitle" style="margin-bottom: 1.5rem;"></h2>
+      <div id="modalBody" class="modal-body" style="line-height: 1.8;">
+        <!-- Content will be injected here -->
       </div>
-      <div id="modalMeta" class="modal-meta"></div>
-      <img id="modalImage" class="modal-image" src="" alt="" style="display:none" loading="lazy" />
-      <div id="modalBody" class="modal-body"></div>
     </div>
   </div>
 
-  <footer>
-    © 2025 Vanlam technologies. All rights reserved.
-  </footer>
+  <!-- Footer is injected by ui.js -->
+
+  <script src="auth.js"></script>
+  <script src="ui.js"></script>
 
   <script>
     const POSTS_KEY = 'vl_posts_v1';
 
-    function loadPosts(){
-      try{ return JSON.parse(localStorage.getItem(POSTS_KEY) || '[]') }catch(e){ return [] }
+    function loadPosts() {
+      try { return JSON.parse(localStorage.getItem(POSTS_KEY) || '[]'); } catch (e) { return []; }
     }
 
-    function escapeHtml(s){
-      return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    }
-
-    function getPreview(content, length=150){
-      return content.substring(0, length) + (content.length > length ? '...' : '');
-    }
-
-    function openModalById(postId){
-      const posts = loadPosts();
-      const post = posts.find(p => p.id === postId);
-      if(!post) return;
-
-      document.getElementById('modalTitle').textContent = escapeHtml(post.title);
-      document.getElementById('modalMeta').textContent = new Date(post.date).toLocaleString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-      const modalImage = document.getElementById('modalImage');
-      if (post.image) {
-        modalImage.src = post.image;
-        modalImage.alt = escapeHtml(post.title);
-        modalImage.style.display = 'block';
-      } else {
-        modalImage.style.display = 'none';
-      }
-
-      document.getElementById('modalBody').textContent = post.content;
-      document.getElementById('postModal').classList.add('active');
-    }
-
-    function closeModal(){
+    function closeModal() {
       document.getElementById('postModal').classList.remove('active');
     }
 
-    function renderPosts(){
+    function openModalById(postId) {
+      const posts = loadPosts();
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+
+      document.getElementById('modalTitle').textContent = post.title;
+      document.getElementById('modalDate').textContent = new Date(post.date).toLocaleDateString('vi-VN', { 
+        year: 'numeric', month: 'long', day: 'numeric' 
+      });
+      
+      let contentHtml = post.content;
+      if (post.image) {
+        contentHtml = `<img src="${post.image}" alt="${post.title}">` + contentHtml;
+      }
+      
+      document.getElementById('modalBody').innerHTML = contentHtml;
+      document.getElementById('postModal').classList.add('active');
+    }
+
+    function renderPosts() {
       const container = document.getElementById('postsList');
-      if(!container) return;
+      if (!container) return;
       const posts = loadPosts();
       
-      if(!posts.length){
-        container.innerHTML = '<div class="empty-state"><p>Chưa có bài viết nào</p></div>';
-        updateSeoJsonLd([]);
+      if (!posts.length) {
+        container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 100px 0;">Chưa có bài viết nào.</div>';
         return;
       }
       
-      container.innerHTML = posts.map(p => {
-        const imageHtml = p.image ? `<img class="post-image" src="${p.image}" alt="${escapeHtml(p.title)}" loading="lazy" />` : '';
+      container.innerHTML = posts.map((p, index) => {
+        const delay = (index % 3) * 0.1;
         return `
-        <article class="post-card" onclick="openModalById('${p.id}')">
-          ${imageHtml}
-          <div class="post-header">
-            <h2 class="post-title">${escapeHtml(p.title)}</h2>
-            <div class="post-meta">${new Date(p.date).toLocaleString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
-            <p class="post-preview">${escapeHtml(getPreview(p.content))}</p>
+        <article class="card post-card reveal" style="transition-delay: ${delay}s" onclick="openModalById('${p.id}')">
+          ${p.image ? `<img src="${p.image}" class="post-img" alt="${p.title}">` : ''}
+          <div class="post-content">
+            <div class="post-date">${new Date(p.date).toLocaleDateString('vi-VN')}</div>
+            <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">${p.title}</h3>
+            <p style="font-size: 0.9rem; -webkit-line-clamp: 3; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;">
+              ${p.content}
+            </p>
           </div>
         </article>
       `;
       }).join('');
-
-      updateSeoJsonLd(posts);
+      
+      // Re-init reveal animations for dynamic content
+      if (window.initScrollReveal) window.initScrollReveal();
     }
 
-    function updateSeoJsonLd(posts) {
-      const schema = {
-        "@context": "https://schema.org",
-        "@type": "Blog",
-        "name": "Tin tức - Vanlam technologies",
-        "url": window.location.href,
-        "description": "Tin tức và bài viết về CNTT, chuyển đổi số từ Vanlam technologies.",
-        "blogPost": posts.map(p => {
-          const item = {
-            "@type": "NewsArticle",
-            "headline": p.title,
-            "datePublished": p.date,
-            "dateModified": p.date,
-            "description": getPreview(p.content, 160),
-            "articleBody": p.content,
-            "url": `${window.location.origin}${window.location.pathname}#${p.id}`,
-            "publisher": {
-              "@type": "Organization",
-              "name": "Vanlam technologies",
-              "logo": {
-                "@type": "ImageObject",
-                "url": "https://example.com/logo.png"
-              }
-            }
-          };
-          if (p.image) item.image = p.image;
-          return item;
-        })
-      };
-
-      let schemaEl = document.getElementById('ldJson');
-      if (!schemaEl) {
-        schemaEl = document.createElement('script');
-        schemaEl.id = 'ldJson';
-        schemaEl.type = 'application/ld+json';
-        document.head.appendChild(schemaEl);
-      }
-      schemaEl.textContent = JSON.stringify(schema, null, 2);
-
-      // Add hidden content for SEO
-      const seoDiv = document.getElementById('seoContent');
-      seoDiv.innerHTML = posts.map(p => `
-        <article>
-          <h2>${escapeHtml(p.title)}</h2>
-          <p>${escapeHtml(p.content)}</p>
-          <time>${new Date(p.date).toISOString()}</time>
-        </article>
-      `).join('');
-    }
-
-    // Initial flow wrapped in DOMContentLoaded
     document.addEventListener('DOMContentLoaded', () => {
       renderPosts();
-
-      // Close modal when clicking outside
-      const postModal = document.getElementById('postModal');
-      if (postModal) {
-        postModal.addEventListener('click', (e) => {
-          if(e.target.id === 'postModal') closeModal();
-        });
-      }
+      
+      // Close modal on outside click
+      const modal = document.getElementById('postModal');
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
     });
   </script>
-
-  <!-- SEO Content for Google -->
-  <div id="seoContent" style="display:none;"></div>
-
-  <!-- Facebook Messenger Chat Plugin -->
-  <div id="fb-root"></div>
-  <script>
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId: '1234567890',
-        xfbml: true,
-        version: 'v18.0'
-      });
-    };
-
-    (function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-  </script>
-
-  <div class="fb-customerchat"
-    page_id="100086614949913"
-    attribution="setup_tool"
-    logged_in_greeting="Xin chào! Có gì tôi có thể giúp bạn?"
-    logged_out_greeting="Xin chào! Có gì tôi có thể giúp bạn?">
-  </div>
-
-  <script src="cart.js?v=20260401"></script>
-  <script src="auth.js?v=20260401"></script>
 </body>
 </html>

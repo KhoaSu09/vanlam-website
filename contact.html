@@ -3,345 +3,180 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Liên hệ | Vanlam technologies</title>
-  <meta name="description" content="Liên hệ với Vanlam technologies để được tư vấn miễn phí về các giải pháp CNTT và chuyển đổi số." />
+  <title>Liên hệ | Vanlam Technologies</title>
+  <meta name="description" content="Liên hệ với Vanlam Technologies để được tư vấn miễn phí về các giải pháp CNTT và chuyển đổi số." />
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="index.css">
+  
   <style>
-    :root {
-      --primary: #0f3c7d;
-      --secondary: #0aa3a3;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --bg: #ffffff;
-      --light: #f4f7fb;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Inter', sans-serif;
-      color: var(--text);
-      background: var(--bg);
-      line-height: 1.6;
-    }
-    a { text-decoration: none; color: inherit; }
-
-    /* Header */
-    header {
-      background: #fff;
-      border-bottom: 1px solid #e5e7eb;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .container {
-      max-width: 1200px;
-      margin: auto;
-      padding: 0 20px;
-    }
-    .nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 70px;
-    }
-    .logo {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--primary);
-    }
-    .menu a {
-      margin-left: 24px;
-      font-weight: 500;
-      color: var(--muted);
-    }
-    .menu a:hover { color: var(--primary); }
-    .menu a.active { color: var(--primary); }
-
-    /* Page Header */
     .page-header {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: #fff;
-      padding: 60px 0;
-    }
-    .page-header h1 {
-      font-size: 36px;
-      margin-bottom: 10px;
-    }
-
-    /* Section */
-    section { padding: 70px 0; }
-
-    /* Contact Content */
-    .contact-wrapper {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 50px;
-      align-items: start;
-    }
-
-    .contact-info h2 {
-      color: var(--primary);
-      font-size: 28px;
-      margin-bottom: 30px;
-    }
-
-    .contact-item {
-      margin-bottom: 30px;
-    }
-
-    .contact-item h3 {
-      color: var(--primary);
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-
-    .contact-item p {
-      color: var(--text);
-      line-height: 1.8;
-    }
-
-    .contact-item a {
-      color: var(--secondary);
-      font-weight: 600;
-    }
-
-    .contact-item a:hover {
-      color: var(--primary);
-    }
-
-    /* Form */
-    .contact-form h2 {
-      color: var(--primary);
-      font-size: 28px;
-      margin-bottom: 30px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      color: var(--text);
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(15, 60, 125, 0.1);
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 120px;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 14px 28px;
       background: var(--primary);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s;
+      color: white;
+      padding: 80px 0;
+      text-align: center;
     }
-
-    .btn:hover {
-      background: var(--secondary);
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 3rem;
+      padding: 80px 0;
     }
-
-    /* Social Links */
-    .social-links {
-      margin-top: 40px;
+    @media (max-width: 992px) {
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text);
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus { outline: none; border-color: var(--accent); }
+    textarea.form-input { min-height: 150px; resize: vertical; }
+    
+    .contact-info-card {
       display: flex;
-      gap: 20px;
+      flex-direction: column;
+      gap: 2rem;
     }
-
-    .social-links a {
-      display: inline-block;
+    .info-item { display: flex; gap: 1rem; align-items: flex-start; }
+    .info-icon {
       width: 40px;
       height: 40px;
-      background: var(--light);
-      border-radius: 8px;
+      background: var(--accent);
+      color: white;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--primary);
-      font-weight: bold;
-    }
-
-    .social-links a:hover {
-      background: var(--primary);
-      color: #fff;
-    }
-
-    footer {
-      background: #020617;
-      color: #9ca3af;
-      padding: 30px 0;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
-      .page-header h1 { font-size: 28px; }
-      .contact-wrapper {
-        grid-template-columns: 1fr;
-        gap: 30px;
-      }
+      flex-shrink: 0;
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header>
-    <div class="container nav">
-      <div class="logo">vanLam technologies</div>
-      <nav class="menu">
-        <a href="index.html">Trang chủ</a>
-        <a href="services.html">Dịch vụ</a>
-        <a href="about.html">Giới thiệu</a>
-        <a href="contact.html" class="active">Liên hệ</a>
-        <a href="news.html">Tin tức</a>
-        <a href="shop.html">Sản phẩm</a>
-        <a href="documents.html">Tài liệu</a>
-        <a href="posts.html" class="admin-only">QL Tin tức</a>
-        <a href="products.html" class="admin-only">QL Sản phẩm</a>
-        <a href="manage-documents.html" class="admin-only">QL Tài liệu</a>
-      </nav>
-    </div>
-  </header>
+  <!-- Header is injected by ui.js -->
 
-  <!-- Page Header -->
-  <section class="page-header">
-    <div class="container">
-      <h1>Liên hệ với chúng tôi</h1>
-      <p>Hãy để chúng tôi giúp bạn biến đổi doanh nghiệp</p>
-    </div>
-  </section>
+  <main>
+    <section class="page-header reveal">
+      <div class="container">
+        <h1 style="color: white; margin-bottom: 0.5rem;">Liên hệ với chúng tôi</h1>
+        <p style="color: #94a3b8;">Chúng tôi luôn sẵn sàng lắng nghe và giải đáp mọi thắc mắc của bạn</p>
+      </div>
+    </section>
 
-  <!-- Contact Section -->
-  <section>
-    <div class="container">
-      <div class="contact-wrapper">
-        <!-- Contact Info -->
-        <div class="contact-info">
-          <h2>Thông tin liên hệ</h2>
-
-          <div class="contact-item">
-            <h3>📧 Email</h3>
-            <p><a href="mailto:khoasu.tech020@gmail.com">khoasu.tech020@gmail.com</a></p>
-            <p style="color: var(--muted); font-size: 14px;">Gửi email để nhận phản hồi trong vòng 24 giờ</p>
+    <section>
+      <div class="container contact-grid">
+        <!-- Info Column -->
+        <div class="contact-info-card reveal">
+          <div class="info-item">
+            <div class="info-icon">📍</div>
+            <div>
+              <h4 style="margin-bottom: 0.25rem;">Địa chỉ</h4>
+              <p style="margin-bottom: 0;">Thành phố Thủ Đức, TP. Hồ Chí Minh, Việt Nam</p>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">📧</div>
+            <div>
+              <h4 style="margin-bottom: 0.25rem;">Email</h4>
+              <p style="margin-bottom: 0;">khoasu.tech020@gmail.com</p>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-icon">📞</div>
+            <div>
+              <h4 style="margin-bottom: 0.25rem;">Hotline</h4>
+              <p style="margin-bottom: 0;">0912 818 815</p>
+              <p style="font-size: 0.8rem; margin-top: 0.25rem;">Hỗ trợ Thứ 2 - Thứ 6 (8:00 - 18:00)</p>
+            </div>
           </div>
 
-          <div class="contact-item">
-            <h3>📞 Hotline</h3>
-            <p><a href="tel:0992818815">0912 818 815</a></p>
-            <p style="color: var(--muted); font-size: 14px;">Hỗ trợ: Thứ 2 - Thứ 6, 8:00 - 18:00</p>
-          </div>
-
-          <div class="contact-item">
-            <h3>Thuduc city</h3>
-            <p>VanLam Consulting<br>
-            HCMC, Vietnam</p>
-          </div>
-
-          <div class="contact-item">
-            <h3>⏰ Giờ làm việc</h3>
-            <p>Thứ Hai - Thứ Sáu: 8:00 - 18:00<br>
-            Thứ Bảy: 9:00 - 12:00<br>
-            Chủ Nhật: Đóng cửa</p>
-          </div>
-
-          <div class="social-links">
-            <a href="https://www.facebook.com/khoaSNA/" title="Facebook">f</a>
-            <a href="https://www.linkedin.com/in/su-khoa-443974393/" title="LinkedIn">in</a>
-            <a href="#" title="Twitter">𝕏</a>
+          <div style="margin-top: 1rem;">
+            <h4 style="margin-bottom: 1rem;">Theo dõi chúng tôi</h4>
+            <div style="display: flex; gap: 0.75rem;">
+              <a href="https://www.facebook.com/khoaSNA/" class="theme-toggle" style="text-decoration: none;">f</a>
+              <a href="https://www.linkedin.com/in/su-khoa-443974393/" class="theme-toggle" style="text-decoration: none;">in</a>
+            </div>
           </div>
         </div>
 
-        <!-- Contact Form -->
-        <div class="contact-form">
-          <h2>Gửi tin nhắn</h2>
+        <!-- Form Column -->
+        <div class="card reveal" style="transition-delay: 0.1s;">
+          <h2 style="margin-bottom: 1.5rem;">Gửi yêu cầu tư vấn</h2>
           <form onsubmit="handleSubmit(event)">
-            <div class="form-group">
-              <label for="name">Họ và tên *</label>
-              <input type="text" id="name" name="name" required>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label for="name">Họ và tên *</label>
+                <input type="text" id="name" class="form-input" placeholder="Nguyễn Văn A" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" class="form-input" placeholder="example@gmail.com" required>
+              </div>
             </div>
-
-            <div class="form-group">
-              <label for="email">khoasu.tech020@gmail.com *</label>
-              <input type="email" id="email" name="email" required>
-            </div>
-
-            <div class="form-group">
-              <label for="phone">0912 818 815</label>
-              <input type="tel" id="phone" name="phone">
-            </div>
-
-            <div class="form-group">
-              <label for="company">Vanlam technologies</label>
-              <input type="text" id="company" name="company">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label for="phone">Số điện thoại</label>
+                <input type="tel" id="phone" class="form-input" placeholder="09xx xxx xxx">
+              </div>
+              <div class="form-group">
+                <label for="company">Tên công ty</label>
+                <input type="text" id="company" class="form-input" placeholder="Tên doanh nghiệp của bạn">
+              </div>
             </div>
 
             <div class="form-group">
               <label for="subject">Chủ đề *</label>
-              <input type="text" id="subject" name="subject" required>
+              <input type="text" id="subject" class="form-input" placeholder="VD: Tư vấn giải pháp Cloud" required>
             </div>
 
             <div class="form-group">
               <label for="message">Nội dung tin nhắn *</label>
-              <textarea id="message" name="message" required></textarea>
+              <textarea id="message" class="form-input" placeholder="Hãy cho chúng tôi biết nhu cầu của bạn..." required></textarea>
             </div>
 
-            <button type="submit" class="btn">Gửi tin nhắn</button>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Gửi tin nhắn ngay</button>
           </form>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      © 2025 Vanlam technologies. All rights reserved.
-    </div>
-  </footer>
+    <!-- Map Placeholder -->
+    <section class="reveal" style="padding-bottom: 80px;">
+      <div class="container">
+        <div style="width: 100%; height: 400px; background: var(--border); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--muted);">
+           [ Google Maps Integration Placeholder ]
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer is injected by ui.js -->
 
   <script>
     function handleSubmit(event) {
       event.preventDefault();
       const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      const subject = document.getElementById('subject').value;
-      const message = document.getElementById('message').value;
-      
-      alert('Cảm ơn ' + name + '! Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.');
+      alert('Cảm ơn ' + name + '! Yêu cầu của bạn đã được gửi thành công. Chúng tôi sẽ phản hồi sớm nhất có thể.');
       event.target.reset();
     }
   </script>
 
-  <script src="cart.js?v=20260401"></script>
-  <script src="auth.js?v=20260401"></script>
+  <script src="auth.js"></script>
+  <script src="ui.js"></script>
 </body>
 </html>

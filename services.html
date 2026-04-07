@@ -3,254 +3,134 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dịch vụ | Vanlam technologies</title>
-  <meta name="description" content="Các dịch vụ chuyên nghiệp của QI Consulting bao gồm tư vấn chuyển đổi số, hạ tầng CNTT, ELV và vận hành bảo trì." />
+  <title>Dịch vụ | Vanlam Technologies</title>
+  <meta name="description" content="Các dịch vụ chuyên nghiệp của Vanlam Technologies bao gồm tư vấn chuyển đổi số, hạ tầng CNTT, ELV và vận hành bảo trì." />
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="index.css">
+  
   <style>
-    :root {
-      --primary: #0f3c7d;
-      --secondary: #0aa3a3;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --bg: #ffffff;
-      --light: #f4f7fb;
+    .page-header {
+      background: var(--primary);
+      color: white;
+      padding: 80px 0;
+      text-align: center;
     }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Inter', sans-serif;
-      color: var(--text);
-      background: var(--bg);
-      line-height: 1.6;
+    .services-detailed {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 3rem;
+      padding: 80px 0;
     }
-    a { text-decoration: none; color: inherit; }
-
-    /* Header */
-    header {
-      background: #fff;
-      border-bottom: 1px solid #e5e7eb;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+    @media (max-width: 600px) {
+      .services-detailed { grid-template-columns: 1fr; }
     }
-    .container {
-      max-width: 1200px;
-      margin: auto;
-      padding: 0 20px;
+    .service-detail-card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
-    .nav {
+    .service-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 1.5rem;
+    }
+    .service-list li {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      height: 70px;
+      gap: 12px;
     }
-    .logo {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--primary);
-    }
-    .menu a {
-      margin-left: 24px;
-      font-weight: 500;
-      color: var(--muted);
-    }
-    .menu a:hover { color: var(--primary); }
-    .menu a.active { color: var(--primary); }
-
-    /* Page Header */
-    .page-header {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: #fff;
-      padding: 60px 0;
-    }
-    .page-header h1 {
-      font-size: 36px;
-      margin-bottom: 10px;
-    }
-
-    /* Section */
-    section { padding: 70px 0; }
-    .section-title {
-      text-align: center;
-      margin-bottom: 50px;
-    }
-    .section-title h2 {
-      font-size: 32px;
-      margin-bottom: 12px;
-    }
-    .section-title p { color: var(--muted); }
-
-    /* Services Details */
-    .service-item {
-      margin-bottom: 50px;
-      padding-bottom: 50px;
-      border-bottom: 1px solid #e5e7eb;
-    }
-    .service-item:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-    .service-item h3 {
-      color: var(--primary);
-      font-size: 24px;
-      margin-bottom: 15px;
-    }
-    .service-item p {
-      color: var(--text);
-      margin-bottom: 10px;
-      line-height: 1.8;
-    }
-    .service-features {
-      list-style: none;
-      margin-top: 15px;
-    }
-    .service-features li {
-      padding: 8px 0;
-      padding-left: 24px;
-      position: relative;
-      color: var(--muted);
-    }
-    .service-features li:before {
-      content: "✓";
-      position: absolute;
-      left: 0;
-      color: var(--secondary);
+    .service-list li:last-child { border-bottom: none; }
+    .service-list li::before {
+      content: "→";
+      color: var(--accent);
       font-weight: bold;
-    }
-
-    /* CTA */
-    .cta {
-      background: var(--light);
-      text-align: center;
-      padding: 50px;
-      border-radius: 14px;
-      margin-top: 50px;
-    }
-    .cta h2 {
-      color: var(--primary);
-      margin-bottom: 15px;
-    }
-    .cta .btn {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 14px 28px;
-      background: var(--primary);
-      color: #fff;
-      border-radius: 8px;
-      font-weight: 600;
-    }
-    .cta .btn:hover {
-      background: var(--secondary);
-    }
-
-    footer {
-      background: #020617;
-      color: #9ca3af;
-      padding: 30px 0;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
-      .page-header h1 { font-size: 28px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header>
-    <div class="container nav">
-      <div class="logo">vanlam Consulting</div>
-      <nav class="menu">
-        <a href="index.html">Trang chủ</a>
-        <a href="services.html" class="active">Dịch vụ</a>
-        <a href="about.html">Giới thiệu</a>
-        <a href="contact.html">Liên hệ</a>
-        <a href="news.html">Tin tức</a>
-        <a href="shop.html">Sản phẩm</a>
-        <a href="documents.html">Tài liệu</a>
-        <a href="posts.html" class="admin-only">QL Tin tức</a>
-        <a href="products.html" class="admin-only">QL Sản phẩm</a>
-        <a href="manage-documents.html" class="admin-only">QL Tài liệu</a>
-      </nav>
-    </div>
-  </header>
+  <!-- Header is injected by ui.js -->
 
-  <!-- Page Header -->
-  <section class="page-header">
-    <div class="container">
-      <h1>Dịch vụ của chúng tôi</h1>
-      <p>Giải pháp toàn diện cho chuyển đổi số và hạ tầng CNTT</p>
-    </div>
-  </section>
-
-  <!-- Services Details -->
-  <section>
-    <div class="container">
-      <div class="service-item">
-        <h3>Tư vấn chuyển đổi số</h3>
-        <p>Chúng tôi cung cấp dịch vụ tư vấn chuyên sâu giúp doanh nghiệp xây dựng chiến lược chuyển đổi số toàn diện. Từ đánh giá hiện trạng công nghệ hiện tại cho đến lộ trình chi tiết, chúng tôi đồng hành cùng bạn từng bước.</p>
-        <ul class="service-features">
-          <li>Đánh giá chi tiết hạ tầng CNTT hiện tại</li>
-          <li>Lên kế hoạch chuyển đổi số dài hạn</li>
-          <li>Tư vấn lựa chọn công nghệ phù hợp</li>
-          <li>Hỗ trợ triển khai và đo lường kết quả</li>
-        </ul>
+  <main>
+    <section class="page-header reveal">
+      <div class="container">
+        <h1 style="color: white; margin-bottom: 0.5rem;">Dịch vụ chuyên nghiệp</h1>
+        <p style="color: #94a3b8;">Giải pháp công nghệ tối ưu cho sự phát triển bền vững của doanh nghiệp</p>
       </div>
+    </section>
 
-      <div class="service-item">
-        <h3>Hạ tầng CNTT & Cloud</h3>
-        <p>Thiết kế và triển khai các giải pháp hạ tầng CNTT hiện đại, bảo đảm tính sẵn sàng cao, an toàn dữ liệu và khả năng mở rộng cho tổ chức của bạn.</p>
-        <ul class="service-features">
-          <li>Thiết kế kiến trúc server và Data Center</li>
-          <li>Triển khai Cloud Computing (AWS, Azure, Google Cloud)</li>
-          <li>Hệ thống Backup và Disaster Recovery</li>
-          <li>Bảo mật thông tin và Firewall Management</li>
-        </ul>
+    <section>
+      <div class="container">
+        <div class="services-detailed">
+          <!-- Item 1 -->
+          <div class="card service-detail-card reveal">
+            <h3 style="color: var(--accent); font-size: 1.5rem; margin-bottom: 1rem;">Tư vấn Chuyển đổi số</h3>
+            <p>Chúng tôi giúp doanh nghiệp tái định nghĩa cách thức vận hành thông qua các giải pháp số hóa hiện đại, tối ưu hóa quy trình và nâng cao trải nghiệm khách hàng.</p>
+            <ul class="service-list">
+              <li>Đánh giá mức độ sẵn sàng chuyển đổi số</li>
+              <li>Xây dựng lộ trình chiến lược (Digital Roadmap)</li>
+              <li>Tư vấn giải pháp ERP/CRM/SaaS</li>
+              <li>Đào tạo và chuyển giao công nghệ</li>
+            </ul>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="card service-detail-card reveal" style="transition-delay: 0.1s;">
+            <h3 style="color: var(--accent); font-size: 1.5rem; margin-bottom: 1rem;">Hạ tầng CNTT & Cloud</h3>
+            <p>Xây dựng nền tảng công nghệ vững chắc với hệ thống máy chủ, lưu trữ và điện toán đám mây an toàn, linh hoạt và có khả năng mở rộng không giới hạn.</p>
+            <ul class="service-list">
+              <li>Triển khai Cloud (Multi-cloud & Hybrid Cloud)</li>
+              <li>Thiết kế & Vận hành Data Center</li>
+              <li>Giải pháp Backup & Disaster Recovery</li>
+              <li>Bảo mật mạng (Firewall, IPS, SIEM)</li>
+            </ul>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="card service-detail-card reveal" style="transition-delay: 0.2s;">
+            <h3 style="color: var(--accent); font-size: 1.5rem; margin-bottom: 1rem;">Giải pháp ELV (Điện nhẹ)</h3>
+            <p>Cung cấp các hệ thống tích hợp thông minh cho tòa nhà và văn phòng, đảm bảo an ninh tuyệt đối và quản lý hạ tầng tập trung hiệu quả.</p>
+            <ul class="service-list">
+              <li>Hệ thống Camera giám sát (CCTV) thông minh</li>
+              <li>Kiểm soát ra vào (Access Control) bằng sinh trắc học</li>
+              <li>Hạ tầng mạng nội bộ & WiFi chuyên dụng</li>
+              <li>Hệ thống âm thanh thông báo & Tổng đài IP</li>
+            </ul>
+          </div>
+
+          <!-- Item 4 -->
+          <div class="card service-detail-card reveal" style="transition-delay: 0.3s;">
+            <h3 style="color: var(--accent); font-size: 1.5rem; margin-bottom: 1rem;">Managed Services (24/7)</h3>
+            <p>Dịch vụ vận hành và bảo trì trọn gói, giúp doanh nghiệp hoàn toàn yên tâm tập trung vào kinh doanh mà không lo ngại về sự cố hệ thống.</p>
+            <ul class="service-list">
+              <li>Giám sát hiệu suất hệ thống thời gian thực</li>
+              <li>Bảo trì định kỳ phần cứng & phần mềm</li>
+              <li>Hỗ trợ kỹ thuật On-site & Remote 24/7</li>
+              <li>Quản lý bảo mật & Cập nhật hệ thống</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="card reveal" style="background: var(--bg); border: 2px dashed var(--accent); text-align: center; margin-bottom: 80px;">
+          <h2>Cần giải pháp tùy chỉnh cho doanh nghiệp?</h2>
+          <p style="margin: 1rem 0 2rem;">Đội ngũ chuyên gia của chúng tôi luôn sẵn sàng lắng nghe và thiết kế giải pháp phù hợp nhất cho nhu cầu riêng biệt của bạn.</p>
+          <a href="contact.html" class="btn btn-primary">Yêu cầu tư vấn miễn phí</a>
+        </div>
       </div>
+    </section>
+  </main>
 
-      <div class="service-item">
-        <h3>Giải pháp ELV</h3>
-        <p>Các hệ thống điện nhẹ toàn diện bao gồm CCTV, Access Control, mạng máy tính và các giải pháp an ninh hiện đại cho các tòa nhà thông minh.</p>
-        <ul class="service-features">
-          <li>Hệ thống CCTV và video giám sát</li>
-          <li>Kiểm soát truy cập (Access Control)</li>
-          <li>Mạng máy tính và điểm phát WiFi</li>
-          <li>Data Center và infrastructure as a service</li>
-        </ul>
-      </div>
+  <!-- Footer is injected by ui.js -->
 
-      <div class="service-item">
-        <h3>Vận hành & Bảo trì</h3>
-        <p>Dịch vụ quản lý vận hành và bảo trì hệ thống CNTT 24/7, bảo đảm sự ổn định, hiệu suất cao và tối ưu hóa chi phí vận hành cho doanh nghiệp.</p>
-        <ul class="service-features">
-          <li>Giám sát hệ thống 24/7</li>
-          <li>Bảo trì định kỳ và khắc phục sự cố</li>
-          <li>Quản lý bản vá bảo mật</li>
-          <li>Báo cáo và tối ưu hóa hệ thống</li>
-        </ul>
-      </div>
-
-      <div class="cta">
-        <h2>Bạn cần dịch vụ của chúng tôi?</h2>
-        <p>Hãy liên hệ với chúng tôi để nhận tư vấn miễn phí về các giải pháp phù hợp nhất cho doanh nghiệp của bạn.</p>
-        <a href="contact.html" class="btn">Liên hệ ngay</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      © 2025 Vanlam Consulting. All rights reserved.
-    </div>
-  </footer>
-
-  <script src="cart.js?v=20260401"></script>
-  <script src="auth.js?v=20260401"></script>
+  <script src="auth.js"></script>
+  <script src="ui.js"></script>
 </body>
 </html>
