@@ -9,6 +9,7 @@
   document.documentElement.setAttribute('data-theme', savedTheme);
 
   document.addEventListener('DOMContentLoaded', () => {
+    seedInitialData(); // Ensure site has content
     injectHeader();
     injectFooter();
     initThemeToggle();
@@ -156,5 +157,60 @@
         link.classList.add('active');
       }
     });
+  }
+
+  // 8. Seed Initial Data
+  function seedInitialData() {
+    const PRODUCTS_KEY = 'vl_products_v1';
+    const POSTS_KEY = 'vl_posts_v1';
+
+    // Seed Products
+    if (!localStorage.getItem(PRODUCTS_KEY)) {
+      const initialProducts = [
+        {
+          id: 'p1',
+          name: 'Hệ thống Camera AI thông minh',
+          price: 15000000,
+          description: 'Hệ thống camera giám sát tích hợp trí tuệ nhân tạo, nhận diện khuôn mặt và cảnh báo xâm nhập thời gian thực.',
+          image: 'assets/img/elv_solutions.png'
+        },
+        {
+          id: 'p2',
+          name: 'Bộ lưu trữ Cloud doanh nghiệp',
+          price: 5000000,
+          description: 'Giải pháp lưu trữ đám mây an toàn, mã hóa đa lớp, băng thông rộng cho doanh nghiệp vừa và nhỏ.',
+          image: 'assets/img/cloud_infra.png'
+        },
+        {
+          id: 'p3',
+          name: 'Thiết bị WiFi 6 Mesh chuyên dụng',
+          price: 3500000,
+          description: 'Công nghệ Mesh WiFi 6 mới nhất, đảm bảo vùng phủ sóng rộng và tốc độ cao cho văn phòng cao tầng.',
+          image: 'assets/img/hero_main.png'
+        }
+      ];
+      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(initialProducts));
+    }
+
+    // Seed Posts
+    if (!localStorage.getItem(POSTS_KEY)) {
+      const initialPosts = [
+        {
+          id: 'n1',
+          title: 'Xu hướng chuyển đổi số năm 2026',
+          date: new Date().toISOString(),
+          content: 'Trong năm 2026, AI và Zero-trust Security sẽ là hai trụ cột chính trong chiến lược số hóa của các doanh nghiệp toàn cầu...',
+          image: 'assets/img/consulting.png'
+        },
+        {
+          id: 'n2',
+          title: 'Vanlam Technologies đạt chứng nhận Bảo mật Quốc tế',
+          date: new Date().toISOString(),
+          content: 'Chúng tôi tự hào thông báo vừa hoàn tất quy trình kiểm định và đạt chứng nhận bảo mật thông tin chuẩn ISO/IEC 27001...',
+          image: 'assets/img/ops_247.png'
+        }
+      ];
+      localStorage.setItem(POSTS_KEY, JSON.stringify(initialPosts));
+    }
   }
 })();
