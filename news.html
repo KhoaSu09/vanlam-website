@@ -97,6 +97,23 @@
       border-radius: var(--radius);
       margin: 1.5rem 0;
     }
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 */
+      height: 0;
+      overflow: hidden;
+      border-radius: var(--radius);
+      margin-bottom: 1.5rem;
+      background: #000;
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
   </style>
 </head>
 <body>
@@ -146,6 +163,15 @@
 
     function closeModal() {
       document.getElementById('postModal').classList.remove('active');
+      // Clear video to stop playback
+      document.getElementById('modalBody').innerHTML = '';
+    }
+
+    function getYoutubeId(url) {
+      if (!url) return null;
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : null;
     }
 
     function openModalById(postId) {
@@ -158,10 +184,25 @@
         year: 'numeric', month: 'long', day: 'numeric' 
       });
       
-      let contentHtml = post.content;
-      if (post.image) {
-        contentHtml = `<img src="${post.image}" alt="${post.title}">` + contentHtml;
+      let contentHtml = '';
+      
+      // Add YouTube video if exists
+      if (post.youtubeUrl) {
+        const videoId = getYoutubeId(post.youtubeUrl);
+        if (videoId) {
+          contentHtml += `
+            <div class="video-container">
+              <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
+            </div>
+          `;
+        }
       }
+
+      if (post.image) {
+        contentHtml += `<img src="${post.image}" alt="${post.title}">`;
+      }
+      
+      contentHtml += post.content;
       
       document.getElementById('modalBody').innerHTML = contentHtml;
       document.getElementById('postModal').classList.add('active');
